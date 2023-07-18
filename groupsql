@@ -1,0 +1,31 @@
+-- Made with love by Larry M.
+-- Change the 07 and 17 in '20230717%%' 07 = Month, 17 = Day
+-- All SQL excludes status 99(Cancelled) cartons.
+
+-- This grabs the total amount of group pick for a wave.
+SELECT CHPRWV AS Wave, COUNT (*)AS CARTONS        
+FROM CHCART00                                     
+WHERE CHCRTP IN ('BOX','ERR') AND CHPRWV LIKE     
+'20230717%%'                                      
+AND CHSVIA NOT LIKE '%%%U%%%' AND CHTCR < '163000'
+AND CHSTAT <> 99
+GROUP BY CHPRWV   
+                     
+-- Checks for cartons not on pallet.
+-- This checks to see if any group pick is not on a license plate.
+SELECT CHMIS4 AS Store, COUNT (*) AS Count                        
+FROM CHCART00                                                     
+WHERE CHCRTP IN ('BOX','ERR') AND CHTCR < '163000' AND CHPRWV LIKE
+'20230717%%'                                                      
+AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT in ('00','05','10','20') 
+AND CHSTAT <> 99
+GROUP BY CHMIS4 
+  
+-- Group pick count by Lane. 
+-- This grabs the group pick count for each lane and displays it.
+SELECT CHMIS4 AS Lane, COUNT (*) AS Total                         
+FROM CHCART00                                                     
+WHERE CHCRTP IN ('BOX','ERR') AND CHTCR < '163000' AND CHPRWV LIKE
+'20230717%%'                                                      
+AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99                    
+GROUP BY CHMIS4                                                                                                                                                                                    
