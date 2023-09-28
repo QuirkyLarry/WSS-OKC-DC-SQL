@@ -29,3 +29,14 @@ WHERE CHCRTP IN ('BOX','ERR') AND CHTCR < '163000' AND CHPRWV LIKE
 '20230717%%'                                                      
 AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99                    
 GROUP BY CHMIS4                                                                                                                                                                                    
+
+-- Group pick count by Lane. 
+-- This grabs the group pick count for each lane and displays it.
+-- Does not exclude waves after a certain time.
+SELECT CHMIS4 AS Lane, COUNT (*) AS Total                
+FROM CHCART00                                            
+WHERE CHCRTP IN ('BOX','ERR') AND CHPRWV IN              
+('20230926005','20230926010','20230927009','20230927010',
+'20230927011','20230927012')                             
+AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99           
+GROUP BY CHMIS4                                          
