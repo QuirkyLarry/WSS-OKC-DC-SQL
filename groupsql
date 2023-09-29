@@ -1,4 +1,4 @@
--- Made with love by Larry M.
+-- Made with love by Larry M & Tim D.
 -- Change the 07 and 17 in '20230717%%' 07 = Month, 17 = Day
 -- All SQL excludes status 99(Cancelled) cartons.
 
@@ -40,3 +40,21 @@ WHERE CHCRTP IN ('BOX','ERR') AND CHPRWV IN
 '20230927011','20230927012')                             
 AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99           
 GROUP BY CHMIS4                                          
+
+
+-- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
+SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
+FROM W18BD00202.STSTYL00 S
+WHERE STBNQT < STNUM3
+AND STNUM1 < STNUM3
+AND STBNQT <> STNUM1
+AND STNUM1 > 1
+
+-- Runs an update for bundle quantites.
+-- Only tested on OKC.
+UPDATE W18BD00202.STSTYL00
+SET STBNQT = STNUM1
+WHERE STBNQT < STNUM3
+AND STNUM1 < STNUM3
+AND STBNQT <> STNUM1
+AND STNUM1 > 1
