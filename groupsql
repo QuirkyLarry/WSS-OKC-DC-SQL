@@ -30,6 +30,22 @@ WHERE CHCRTP IN ('BOX','ERR') AND CHTCR < '163000' AND CHPRWV LIKE
 AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99                    
 GROUP BY CHMIS4                                                                                                                                                                                    
 
+-- Returns unaudited group cartons by lane.
+-- Currently being tested, working as of now.
+SELECT CHMIS4 AS Lane, COUNT (*) AS Total                         
+FROM CHCART00                                                     
+WHERE CHCRTP IN ('BOX','ERR') 
+AND CHTCR < '163000' 
+AND CHPRWV LIKE
+'20231009%%'                                                      
+AND CHSVIA NOT LIKE '%%%U%%%'
+AND CHSTAT <> 99
+AND CHAUST = ' '
+GROUP BY CHMIS4                                                
+
+
+
+=============== Legacy SQL ================
 -- Group pick count by Lane. 
 -- This grabs the group pick count for each lane and displays it.
 -- Does not exclude waves after a certain time.
@@ -39,9 +55,9 @@ WHERE CHCRTP IN ('BOX','ERR') AND CHPRWV IN
 ('20230926005','20230926010','20230927009','20230927010',
 '20230927011','20230927012')                             
 AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99           
-GROUP BY CHMIS4                                          
+GROUP BY CHMIS4 
 
-
+============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
 SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
 FROM W18BD00202.STSTYL00 S
