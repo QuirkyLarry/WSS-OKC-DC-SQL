@@ -43,8 +43,6 @@ AND CHSTAT <> 99
 AND CHAUST = ' '
 GROUP BY CHMIS4                                                
 
-
-
 =============== Legacy SQL ================
 -- Group pick count by Lane. 
 -- This grabs the group pick count for each lane and displays it.
