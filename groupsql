@@ -43,6 +43,14 @@ AND CHSTAT <> 99
 AND CHAUST = ' '
 GROUP BY CHMIS4                                                
 
+-- Currently Being Tested
+SELECT PHSHTO AS STORE, PHSHZP AS ZIP
+FROM PHPICK00                        
+WHERE PHPRWV LIKE                    
+'20231016012'                        
+AND PHSVIA NOT LIKE '%%%U%%%'        
+ORDER BY PHSHZP                      
+
 =============== Legacy SQL ================
 -- Group pick count by Lane. 
 -- This grabs the group pick count for each lane and displays it.
