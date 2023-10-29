@@ -44,6 +44,7 @@ AND CHAUST = ' '
 GROUP BY CHMIS4                                                
 
 -- Currently Being Tested
+-- Shows store ZIP codes in order.
 SELECT PHSHTO AS STORE, PHSHZP AS ZIP
 FROM PHPICK00                        
 WHERE PHPRWV LIKE                    
