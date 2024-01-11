@@ -52,12 +52,13 @@ AND PHSVIA NOT LIKE '%%%U%%%'
 ORDER BY PHSHZP
 
 -- Test
-SELECT PHSHTO AS STORE, PHSHZP AS ZIP, PHESWT As Weight                  
-FROM PHPICK00                                             
-WHERE PHPRWV LIKE                                         
-'20240109012'                                             
-AND PHSVIA NOT LIKE '%%%U%%%'                                                                                     
-ORDER BY PHSHZP ASC, PHESWT                                   
+SELECT PHSHTO AS STORE,PHSHST AS STATE,PHSHZP AS ZIP,
+PHESWT As Weight                                     
+FROM PHPICK00                                        
+WHERE PHPRWV LIKE                                    
+'20240110035'                                        
+AND PHSVIA NOT LIKE '%%%U%%%'                        
+ORDER BY PHSHST ASC, PHESWT                                                           
 
 =============== Legacy SQL ================
 -- Group pick count by Lane. 
