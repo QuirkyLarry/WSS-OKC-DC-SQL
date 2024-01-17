@@ -58,7 +58,23 @@ FROM PHPICK00
 WHERE PHPRWV LIKE                                    
 '20240110035'                                        
 AND PHSVIA NOT LIKE '%%%U%%%'                        
-ORDER BY PHSHST ASC, PHESWT                                                           
+ORDER BY PHSHST ASC, PHESWT   
+
+-- Testing, All In One SQL (Count, Audited, On Pallet)
+SELECT CHSTOR AS Store,COUNT(*)AS Cartons,                      
+(SELECT COUNT(*) FROM CHCART00 WHERE CART.CHSTOR = CHSTOR AND   
+CHFZN = '000' AND CHAUST != ' ' AND CHSTAT <> 99 AND CHPRWV LIKE
+'20240102%%' AND CHMIS4 != ' ' ) As Audited,                    
+                                                                
+(SELECT COUNT(*) FROM CHCART00 WHERE CART.CHSTOR = CHSTOR AND   
+CHFZN = '000' AND CHSTAT >= 30 AND CHSTAT <> 99 AND CHPRWV LIKE 
+'20240102%%' AND CHMIS4 != ' ' ) As OnPallet                    
+                                                                
+FROM CHCART00 AS CART                                           
+WHERE CHFZN = '000' AND CHTCR < '190000' AND CHPRWV LIKE        
+'20240102%%'                                                    
+AND CHMIS4 != ' ' AND CHSTAT <> 99                              
+GROUP BY CHSTOR
 
 =============== Legacy SQL ================
 -- Group pick count by Lane. 
