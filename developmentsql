@@ -1,3 +1,32 @@
+===================================================================
+-- This is the same as above, just cleaned up for testing purposes.
+===================================================================
+SELECT CHSTOR AS Store,
+(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND 
+CHMIS4!=' ' AND CHTCR<'190000' AND CHPRWV LIKE '20240118%%'
+)AS Lane, 
+
+COUNT(*)AS Cartons,(CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN 
+1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS Audited,
+
+COUNT(CASE WHEN CHSTAT IN ('10','20') THEN 1 ELSE NULL END)
+AS NeedAudit,(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE 
+NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS OnPallet,
+
+COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL END)
+AS ToBeBoxed,
+
+COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END) AS Printed,
+
+COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END) AS InPacking
+
+FROM CHCART00 AS CART 
+WHERE CHCRTP IN ('BOX','ERR') AND CHTCR<'190000'
+AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
+
+'20240118%%'
+GROUP BY CHSTOR
+
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
 SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
