@@ -1,3 +1,27 @@
+SELECT CHSTOR AS Store,                                           
+(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE                       
+CART.CHSTOR = CHSTOR AND CHFZN = '000' AND CHSTAT >= 30 AND CHSTAT
+<> 99 AND CHMIS4 != ' ' AND CHTCR < '190000' AND CHPRWV LIKE      
+'20240118%%') As Lane, COUNT(*)AS Cartons,                        
+                                                                  
+(CASE WHEN COUNT(CASE WHEN CHAUST != ' ' THEN 1 ELSE NULL END) =  
+COUNT(*) THEN 'Yes' ELSE 'No' END) AS Audited,                    
+(CASE WHEN COUNT(CASE WHEN CHSTAT >=30 THEN 1 ELSE NULL END) =    
+COUNT(*) THEN 'Yes' ELSE 'No' END) AS  OnPallet                   
+                                                                  
+                                                                  
+                                                                  
+FROM CHCART00 AS CART WHERE CHFZN = '000' AND                     
+CHMIS4 != ' ' AND CHSTAT <> 99 AND CHPRWV LIKE                    
+'20240118%%'                                                      
+GROUP BY CHSTOR                                                   
+
+
+
+
+
+
+
 -- Made with love by Larry M & Tim D.
 -- Change the 07 and 17 in '20230717%%' 07 = Month, 17 = Day
 -- All SQL excludes status 99(Cancelled) cartons.
