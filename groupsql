@@ -3,20 +3,8 @@
 -- All SQL excludes status 99(Cancelled) cartons.
 
 ===================================================================
-
 -- This grabs the total amount of group pick by wave.
 [Store #, Lane, Cartons, Audited(Yes/No),NeedAudit,OnPallet(Yes/No),ToBeBoxed,Printed,InPacking]
---Testing, All In One SQL Displayed As Below
-Store #: This is the store # assigned to the carton.
-Lane: This is the lane assigned to the carton.
-Cartons: The total number of group for the store.
-Audited: Returns 'Yes' if all group for the store has been audited, 'No' if not.
-NeedAudit: Returns the remaining amount of group that needs to be audited.
-OnPallet: Returns 'Yes' if all group for the store is on a license plate, 'No' if not.
-ToBeBoxed: This returns the amount of audited group for a store that is not on a license plate.
-Printed: Amount of cartons for a store that picking has started for.
-InPacking: Amount of cartons for a store that is currently being picked.
-
 ===================================================================
 
 SELECT CHSTOR AS Store,(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE C
@@ -32,35 +20,6 @@ COUNT(*) THEN 'Yes'ELSE'No' END) AS OnPallet,COUNT(CASE WHEN CHSTAT<
 EN CHSTAT=00 THEN 1 ELSE NULL END) AS Printed,COUNT(CASE WHEN CHSTAT
 =05 THEN 1 ELSE NULL END) AS InPacking FROM CHCART00 AS CART WHERE
 CHCRTP IN ('BOX','ERR') AND CHTCR<'190000'
-AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
-
-'20240118%%'
-GROUP BY CHSTOR
-
-===================================================================
--- This is the same as above, just cleaned up for testing purposes.
-===================================================================
-SELECT CHSTOR AS Store,
-(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND 
-CHMIS4!=' ' AND CHTCR<'190000' AND CHPRWV LIKE '20240118%%'
-)AS Lane, 
-
-COUNT(*)AS Cartons,(CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN 
-1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS Audited,
-
-COUNT(CASE WHEN CHSTAT IN ('10','20') THEN 1 ELSE NULL END)
-AS NeedAudit,(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE 
-NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS OnPallet,
-
-COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL END)
-AS ToBeBoxed,
-
-COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END) AS Printed,
-
-COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END) AS InPacking
-
-FROM CHCART00 AS CART 
-WHERE CHCRTP IN ('BOX','ERR') AND CHTCR<'190000'
 AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
 
 '20240118%%'
