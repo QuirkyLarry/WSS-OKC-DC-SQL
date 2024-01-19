@@ -1,8 +1,9 @@
 -- Made with love by Larry M & Tim D.
--- Change the 07 and 17 in '20240101%%' 07 = Month, 17 = Day
+-- Change the 01 and 18 in '20240118%%' 07 = Month, 17 = Day
 -- All SQL excludes status 99(Cancelled) cartons.
 
 ===================================================================
+
 -- This grabs the total amount of group pick by wave.
 [Store #, Lane, Cartons, Audited(Yes/No),NeedAudit,OnPallet(Yes/No),ToBeBoxed,Printed,InPacking]
 --Testing, All In One SQL Displayed As Below
@@ -15,7 +16,9 @@ OnPallet: Returns 'Yes' if all group for the store is on a license plate, 'No' i
 ToBeBoxed: This returns the amount of audited group for a store that is not on a license plate.
 Printed: Amount of cartons for a store that picking has started for.
 InPacking: Amount of cartons for a store that is currently being picked.
+
 ===================================================================
+
 SELECT CHSTOR AS Store,(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE C
 ART.CHSTOR=CHSTOR AND CHMIS4!=' ' AND CHTCR<'190000' AND CHPRWV LIKE
 
@@ -35,7 +38,7 @@ AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
 GROUP BY CHSTOR
 
 ===================================================================
--- This is the same as above, just cleaned up for testing purposed.
+-- This is the same as above, just cleaned up for testing purposes.
 ===================================================================
 SELECT CHSTOR AS Store,
 (SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND 
@@ -75,16 +78,6 @@ AND CHSTAT <> 99
 GROUP BY CHPRWV                                                   
 
 ===================================================================
--- Returns stores from a given wave and sorted by ZIP code.
-===================================================================
-SELECT PHSHTO AS STORE, PHSHZP AS ZIP
-FROM PHPICK00                        
-WHERE PHPRWV LIKE                    
-'20231016012'                        
-AND PHSVIA NOT LIKE '%%%U%%%'        
-ORDER BY PHSHZP
-
-===================================================================
 -- Testing, Returns stores from a given wave sorted by state and then ordered by weight.
 ===================================================================
 SELECT PHSHTO AS STORE,PHSHST AS STATE,PHSHZP AS ZIP,
@@ -94,102 +87,3 @@ WHERE PHPRWV LIKE
 '20240110035'                                        
 AND PHSVIA NOT LIKE '%%%U%%%'                        
 ORDER BY PHSHST ASC, PHESWT   
-
-
-===================================================================
-Testing, All In One SQL (Count, Audited, On Pallet)
-===================================================================
-SELECT CHSTOR AS Store,COUNT(*)AS Cartons,                      
-(SELECT COUNT(*) FROM CHCART00 WHERE CART.CHSTOR = CHSTOR AND   
-CHFZN = '000' AND CHAUST != ' ' AND CHSTAT <> 99 AND CHPRWV LIKE
-'20240102%%' AND CHMIS4 != ' ' ) As Audited,                    
-                                                                
-(SELECT COUNT(*) FROM CHCART00 WHERE CART.CHSTOR = CHSTOR AND   
-CHFZN = '000' AND CHSTAT >= 30 AND CHSTAT <> 99 AND CHPRWV LIKE 
-'20240102%%' AND CHMIS4 != ' ' ) As OnPallet                    
-                                                                
-FROM CHCART00 AS CART                                           
-WHERE CHFZN = '000' AND CHTCR < '190000' AND CHPRWV LIKE        
-'20240102%%'                                                    
-AND CHMIS4 != ' ' AND CHSTAT <> 99                              
-GROUP BY CHSTOR
-
-===================================================================
-Testing, All In One SQL (Count, Audited(Yes/No), On Pallet(Yes/No))
-===================================================================
-SELECT CHSTOR AS Store,
-(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE
-CART.CHSTOR = CHSTOR AND CHFZN = '000' AND CHSTAT >= 30 AND CHSTAT
-<> 99 AND CHMIS4 != ' ' AND CHTCR < '190000' AND CHPRWV LIKE
-'20240118%%') As Lane, COUNT(*)AS Cartons,
-
-(CASE WHEN COUNT(CASE WHEN CHAUST != ' ' THEN 1 ELSE NULL END) =
-COUNT(*) THEN 'Yes' ELSE 'No' END) AS Audited,
-(CASE WHEN COUNT(CASE WHEN CHSTAT >=30 THEN 1 ELSE NULL END) =
-COUNT(*) THEN 'Yes' ELSE 'No' END) AS  OnPallet
-
-FROM CHCART00 AS CART WHERE CHFZN = '000' AND
-CHMIS4 != ' ' AND CHSTAT <> 99 AND CHPRWV LIKE
-'20240118%%'
-GROUP BY CHSTOR                                                    
-
-=============== Legacy SQL ================
--- Group pick count by Lane. 
--- This grabs the group pick count for each lane and displays it.
--- Does not exclude waves after a certain time.
-SELECT CHMIS4 AS Lane, COUNT (*) AS Total                
-FROM CHCART00                                            
-WHERE CHCRTP IN ('BOX','ERR') AND CHPRWV IN              
-('20230926005','20230926010','20230927009','20230927010',
-'20230927011','20230927012')                             
-AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99           
-GROUP BY CHMIS4 
-
--- Checks for cartons not on pallet.
--- This checks to see if any group pick is not on a license plate.
-SELECT CHMIS4 AS Store, COUNT (*) AS Count                        
-FROM CHCART00                                                     
-WHERE CHCRTP IN ('BOX','ERR') AND CHTCR < '190000' AND CHPRWV LIKE
-'20240102%%'                                                      
-AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT in ('00','05','10','20') 
-AND CHSTAT <> 99
-GROUP BY CHMIS4 
-
--- Group pick count by Lane. 
--- This grabs the group pick count for each lane and displays it.
-SELECT CHMIS4 AS Lane, COUNT (*) AS Total                         
-FROM CHCART00                                                     
-WHERE CHCRTP IN ('BOX','ERR') AND CHTCR < '190000' AND CHPRWV LIKE
-'20240102%%'                                                      
-AND CHSVIA NOT LIKE '%%%U%%%' AND CHSTAT <> 99                    
-GROUP BY CHMIS4                                                                                                                                                                                    
-
--- Returns unaudited group cartons by lane.
-SELECT CHMIS4 AS Lane, COUNT (*) AS Total                         
-FROM CHCART00                                                     
-WHERE CHCRTP IN ('BOX','ERR') 
-AND CHTCR < '190000' 
-AND CHPRWV LIKE
-'20240102%%'                                                      
-AND CHSVIA NOT LIKE '%%%U%%%'
-AND CHSTAT <> 99
-AND CHAUST = ' '
-GROUP BY CHMIS4
-
-============== Once a Week SQL ============
--- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
-SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
-FROM W18BD00202.STSTYL00 S
-WHERE STBNQT < STNUM3
-AND STNUM1 < STNUM3
-AND STBNQT <> STNUM1
-AND STNUM1 > 1
-
--- Runs an update for bundle quantites.
--- Only tested on OKC.
-UPDATE W18BD00202.STSTYL00
-SET STBNQT = STNUM1
-WHERE STBNQT < STNUM3
-AND STNUM1 < STNUM3
-AND STBNQT <> STNUM1
-AND STNUM1 > 1
