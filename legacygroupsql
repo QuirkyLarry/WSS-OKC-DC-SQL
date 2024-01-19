@@ -1,4 +1,15 @@
 =============== Legacy SQL ================
+===================================================================
+-- Returns stores from a given wave and sorted by ZIP code.
+This is used when assigning lanes.
+===================================================================
+SELECT PHSHTO AS STORE, PHSHZP AS ZIP
+FROM PHPICK00                        
+WHERE PHPRWV LIKE                    
+'20231016012'                        
+AND PHSVIA NOT LIKE '%%%U%%%'        
+ORDER BY PHSHZP
+
 -- Group pick count by Lane. 
 -- This grabs the group pick count for each lane and displays it.
 -- Does not exclude waves after a certain time.
