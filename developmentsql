@@ -1,1 +1,17 @@
+============== Once a Week SQL ============
+-- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
+SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
+FROM W18BD00202.STSTYL00 S
+WHERE STBNQT < STNUM3
+AND STNUM1 < STNUM3
+AND STBNQT <> STNUM1
+AND STNUM1 > 1
 
+-- Runs an update for bundle quantites.
+-- Only tested on OKC.
+UPDATE W18BD00202.STSTYL00
+SET STBNQT = STNUM1
+WHERE STBNQT < STNUM3
+AND STNUM1 < STNUM3
+AND STBNQT <> STNUM1
+AND STNUM1 > 1
