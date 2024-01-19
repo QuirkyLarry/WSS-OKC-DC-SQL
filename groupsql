@@ -8,9 +8,7 @@ CART.CHSTOR = CHSTOR AND CHFZN = '000' AND CHSTAT >= 30 AND CHSTAT
 COUNT(*) THEN 'Yes' ELSE 'No' END) AS Audited,                    
 (CASE WHEN COUNT(CASE WHEN CHSTAT >=30 THEN 1 ELSE NULL END) =    
 COUNT(*) THEN 'Yes' ELSE 'No' END) AS  OnPallet                   
-                                                                  
-                                                                  
-                                                                  
+                   
 FROM CHCART00 AS CART WHERE CHFZN = '000' AND                     
 CHMIS4 != ' ' AND CHSTAT <> 99 AND CHPRWV LIKE                    
 '20240118%%'                                                      
