@@ -1,5 +1,15 @@
 =============== Legacy SQL ================
 ===================================================================
+-- Testing, Returns stores from a given wave sorted by state and then ordered by weight.
+===================================================================
+SELECT PHSHTO AS STORE,PHSHST AS STATE,PHSHZP AS ZIP,
+PHESWT As Weight                                     
+FROM PHPICK00                                        
+WHERE PHPRWV LIKE                                    
+'20240110035'                                        
+AND PHSVIA NOT LIKE '%%%U%%%'                        
+ORDER BY PHSHST ASC, PHESWT   
+===================================================================
 -- Returns stores from a given wave and sorted by ZIP code.
 This is used when assigning lanes.
 ===================================================================
