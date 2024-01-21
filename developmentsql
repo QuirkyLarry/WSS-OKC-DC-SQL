@@ -32,6 +32,30 @@ AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
 GROUP BY CHSTOR                                                  
 ORDER BY Palletized DESC,AUDITED DESC,UnBoxed ASC,LANE           
 
+===================================================================
+-- This is the same as above, just cleaned up for testing purposes.
+===================================================================
+
+SELECT PHSHTO AS STORE,TRIM(PHSHST) AS STATE,TRIM(PHESWT)AS Weight,
+
+(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP IN ('BOX','ERR')) AS GroupQTY,
+
+(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'LBL') AS LBLs,
+
+(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HTRs,
+
+(SELECT COUNT(*) / 4 FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HeaterPLTS
+
+FROM PHPICK00 AS PICK
+WHERE PHPRWV LIKE
+'20240119010'
+AND PHSVIA NOT LIKE '%%%U%%%'
+ORDER BY PHSHST ASC,PHSHZP
+
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
 SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
