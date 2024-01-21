@@ -1,5 +1,5 @@
 ===================================================================
--- This is the same as above, just cleaned up for testing purposes.
+-- This our group SQL spaced out for development purposes.
 ===================================================================
 SELECT CHSTOR AS Store,                                            
 (SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND 
@@ -33,7 +33,7 @@ GROUP BY CHSTOR
 ORDER BY Palletized DESC,AUDITED DESC,UnBoxed ASC,LANE           
 
 ===================================================================
--- This is the same as above, just cleaned up for testing purposes.
+-- This our lane SQL spaced out for development purposes.
 ===================================================================
 
 SELECT PHSHTO AS STORE,TRIM(PHSHST) AS STATE,TRIM(PHESWT)AS Weight,
