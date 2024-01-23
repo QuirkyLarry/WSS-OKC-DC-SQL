@@ -30,7 +30,7 @@ AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
                                                                  
 '20240118%%'                                                     
 GROUP BY CHSTOR                                                  
-ORDER BY Palletized DESC,AUDITED DESC,UnBoxed ASC,LANE           
+ORDER BY Palletized DESC,AUDITED DESC,UnAudited ASC,LANE           
 
 ===================================================================
 -- This our lane SQL spaced out for development purposes.
