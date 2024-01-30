@@ -23,7 +23,7 @@ FROM CHCART00 AS CART WHERE CHCRTP IN ('BOX','ERR') AND CHTCR<'19000
 0' AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
 '20240119%%'
 GROUP BY CHSTOR
-ORDER BY Palletized DESC,AUDITED DESC, LANE
+ORDER BY Palletized DESC,AUDITED DESC, UNASSIGNED ASC, LANE
 
 ===================================================================
 -- This grabs the total amount of group pick for a wave.
