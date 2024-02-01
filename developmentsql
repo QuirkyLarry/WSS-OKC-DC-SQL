@@ -55,6 +55,41 @@ WHERE PHPRWV LIKE
 '20240119010'
 AND PHSVIA NOT LIKE '%%%U%%%'
 ORDER BY PHSHST ASC,PHSHZP
+===== Revision Version
+SELECT CHSTOR AS Store,                                           
+(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND
+CHMIS4!=' ' AND CHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE      
+WDWVST = 20 AND  WDIATY = ' ')                                    
+)AS Lane,                                                         
+COUNT(*)AS CountQTY,                                              
+                                                                  
+COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END) AS UnAssigned,    
+                                                                  
+COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END) AS Assigned,      
+                                                                  
+COUNT(CASE WHEN CHSTAT IN ('10','20') AND CHAUST=' ' THEN 1       
+ELSE NULL END) AS UnAudited,                                      
+                                                                  
+(CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN                       
+1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS Audited,      
+
+COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL END)
+AS UnBoxed,                                                      
+                                                                 
+(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE                
+NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized       
+                                                                 
+FROM CHCART00 AS CART                                            
+WHERE CHCRTP IN ('BOX','ERR')                                    
+AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV IN (SELECT WDPRWV   
+FROM WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')               
+AND (CASE WHEN CHSTOR = ' ' THEN CHSTOR = CHPCTL ELSE NULL END)  
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+GROUP BY CHSTOR                                                  
+ORDER BY Palletized DESC,AUDITED DESC,UnAudited ASC,LANE         
 
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
