@@ -82,8 +82,7 @@ NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized
 FROM CHCART00 AS CART                                            
 WHERE CHCRTP IN ('BOX','ERR')                                    
 AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV IN (SELECT WDPRWV   
-FROM WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')               
-AND (CASE WHEN CHSTOR = ' ' THEN CHSTOR = CHPCTL ELSE NULL END)  
+FROM WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')                
                                                                  
                                                                  
                                                                  
