@@ -59,7 +59,7 @@ ORDER BY PHSHST ASC,PHSHZP
 SELECT CHSTOR AS Store,                                           
 (SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND
 CHMIS4!=' ' AND CHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE      
-WDWVST = 20 AND  WDIATY = ' ')                                    
+WDWVST = 20 AND  WDIATY = ' ') AND CHSTAT <> 99 AND  CHSTAT < 85  
 )AS Lane,                                                         
 COUNT(*)AS CountQTY,                                              
                                                                   
@@ -81,10 +81,10 @@ NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized
                                                                  
 FROM CHCART00 AS CART                                            
 WHERE CHCRTP IN ('BOX','ERR')                                    
-AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV IN (SELECT WDPRWV   
-FROM WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')                
+AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHSTAT < 85                
                                                                  
-                                                                 
+AND CHPRWV IN (SELECT WDPRWV                                     
+FROM WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')               
                                                                  
                                                                  
 GROUP BY CHSTOR                                                  
