@@ -1,0 +1,29 @@
+SELECT CHPCTL, CHSTOR,                                              
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+COUNT(*) As TotalCartons,                                           
+                                                                    
+COUNT(CASE WHEN CHCRTP = 'LBL' THEN 1 ELSE NULL END) AS LBLs,       
+                                                                    
+COUNT(CASE WHEN CHCRTP = 'HTR' THEN 1 ELSE NULL END) AS Heaters,    
+                                                                    
+COUNT(CASE WHEN CHCRTP = 'BOX' THEN 1 ELSE NULL END) AS GroupBOX,   
+                                                                    
+COUNT(CASE WHEN CHCRTP = 'ERR' THEN 1 ELSE NULL END) AS GroupERRBOX,
+TRIM(                                                               
+                                                                    
+SUM(CHESWT)) AS Weight                                              
+
+  FROM CHCART00 AS CART           
+WHERE                           
+    CHMIS4 != ' ' AND CHSTAT<>99
+                                
+AND CHPRWV LIKE '202401%%%%%'   
+                                
+                                
+                                
+                                
+GROUP BY CHSTOR, CHPCTL         
+ORDER BY CHSTOR DESC            
