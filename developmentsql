@@ -90,41 +90,39 @@ FROM WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')
 GROUP BY CHSTOR                                                  
 ORDER BY Palletized DESC,AUDITED DESC,UnAudited ASC,LANE    
 ============== Very experimental version ============
-SELECT (CASE WHEN CHSTOR = ' ' THEN          CHPCTL                 
-                                          ELSE CHSTOR END) AS Store,
-(CASE WHEN CHMIS4 <>' ' THEN CHMIS4 ELSE  NULL         END)         
-AS Lane,                                                            
+SELECT (CASE WHEN CHSTOR=' ' THEN CHPCTL  ELSE CHSTOR END) AS Store,
                                                                     
-                                                                    
-                                                                    
+(CASE WHEN CHMIS4 <>' ' THEN CHMIS4 ELSE NULL END) AS Lane,         
                                                                     
 COUNT(*)AS CountQTY,                                                
+                                                                    
 COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END) AS UnAssigned,      
+                                                                    
 COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END) AS Assigned,        
+                                                                    
 COUNT(CASE WHEN CHSTAT IN ('10','20') AND CHAUST=' ' THEN 1         
 ELSE NULL END) AS UnAudited,                                        
                                                                     
 (CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN                         
 1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS Audited,        
-                                                                    
-COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL END)
-AS UnBoxed,                                                      
-                                                                 
-(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE                
-NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized       
-                                                                 
-FROM CHCART00 AS CART                                            
-WHERE CHCRTP IN ('BOX','ERR')                                    
-AND CHMIS4 != ' ' AND CHSTAT<>99                                 
-                                                                 
-AND CHPRWV LIKE '20240208%%%'                                    
-GROUP BY (CASE WHEN CHSTOR = ' ' THEN          CHPCTL            
-                                              ELSE CHSTOR END),  
-                                                                 
-                                                                 
-(CASE WHEN CHMIS4 <>' ' THEN CHMIS4 ELSE  NULL         END)      
-ORDER BY Lane                                                    
 
+COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL END) 
+AS UnBoxed,                                                       
+                                                                  
+(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE                 
+NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized        
+                                                                  
+FROM CHCART00 AS CART                                             
+WHERE CHCRTP IN ('BOX','ERR')                                     
+AND CHMIS4 != ' ' AND CHSTAT<>99 AND CHPRWV IN (SELECT WDPRWV FROM
+WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')                     
+                                                                  
+                                                                  
+                                                                  
+GROUP BY (CASE WHEN CHSTOR = ' ' THEN CHPCTL ELSE CHSTOR END),    
+(CASE WHEN CHMIS4 <>' ' THEN CHMIS4 ELSE NULL END)                
+                                                                  
+ORDER BY Palletized DESC,AUDITED DESC, UNASSIGNED ASC, LANE          
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
 SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
