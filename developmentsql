@@ -1,66 +1,6 @@
 ===================================================================
 -- This our group SQL spaced out for development purposes.
 ===================================================================
-
-
-===================================================================
--- This our lane SQL spaced out for development purposes.
-===================================================================
-
-SELECT PHSHTO AS STORE,TRIM(PHSHST) AS STATE,TRIM(PHESWT)AS Weight,
-
-(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP IN ('BOX','ERR')) AS GroupQTY,
-
-(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'LBL') AS LBLs,
-
-(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HTRs,
-
-(SELECT COUNT(*) / 4 FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HeaterPLTS
-
-FROM PHPICK00 AS PICK
-WHERE PHPRWV LIKE
-'20240119010'
-AND PHSVIA NOT LIKE '%%%U%%%'
-ORDER BY PHSHST ASC,PHSHZP
-===== Revision Version
-SELECT CHSTOR AS Store,                                           
-(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND
-CHMIS4!=' ' AND CHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE      
-WDWVST = 20 AND  WDIATY = ' ') AND CHSTAT <> 99 AND  CHSTAT < 85  
-)AS Lane,                                                         
-COUNT(*)AS CountQTY,                                              
-                                                                  
-COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END) AS UnAssigned,    
-                                                                  
-COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END) AS Assigned,      
-                                                                  
-COUNT(CASE WHEN CHSTAT IN ('10','20') AND CHAUST=' ' THEN 1       
-ELSE NULL END) AS UnAudited,                                      
-                                                                  
-(CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN                       
-1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS Audited,      
-
-COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL END)
-AS UnBoxed,                                                      
-                                                                 
-(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE                
-NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized       
-                                                                 
-FROM CHCART00 AS CART                                            
-WHERE CHCRTP IN ('BOX','ERR')                                    
-AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHSTAT < 85                
-                                                                 
-AND CHPRWV IN (SELECT WDPRWV                                     
-FROM WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')               
-                                                                 
-                                                                 
-GROUP BY CHSTOR                                                  
-ORDER BY Palletized DESC,AUDITED DESC,UnAudited ASC,LANE    
-============== Very experimental version ============
 SELECT (CASE WHEN CHSTOR=' ' THEN CHPCTL  ELSE CHSTOR END) AS Store,
                                                                     
 (CASE WHEN CHMIS4 <>' ' THEN CHMIS4 ELSE NULL END) AS Lane,         
@@ -88,12 +28,35 @@ WHERE CHCRTP IN ('BOX','ERR')
 AND CHMIS4 != ' ' AND CHSTAT<>99 AND CHPRWV IN (SELECT WDPRWV FROM
 WDWAVE00 WHERE WDWVST = 20 AND  WDIATY = ' ')                     
                                                                   
-                                                                  
-                                                                  
 GROUP BY (CASE WHEN CHSTOR = ' ' THEN CHPCTL ELSE CHSTOR END),    
 (CASE WHEN CHMIS4 <>' ' THEN CHMIS4 ELSE NULL END)                
                                                                   
 ORDER BY Palletized DESC,AUDITED DESC, UNASSIGNED ASC, LANE          
+
+===================================================================
+-- This our lane SQL spaced out for development purposes.
+===================================================================
+
+SELECT PHSHTO AS STORE,TRIM(PHSHST) AS STATE,TRIM(PHESWT)AS Weight,
+
+(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP IN ('BOX','ERR')) AS GroupQTY,
+
+(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'LBL') AS LBLs,
+
+(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HTRs,
+
+(SELECT COUNT(*) / 4 FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HeaterPLTS
+
+FROM PHPICK00 AS PICK
+WHERE PHPRWV LIKE
+'20240119010'
+AND PHSVIA NOT LIKE '%%%U%%%'
+ORDER BY PHSHST ASC,PHSHZP
+
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
 SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
