@@ -65,9 +65,31 @@ WDWVST = 20 AND  WDIATY = ' ')
                                                              
 ORDER BY PHSHST ASC,PHSHZP
 ============== Returns SKUs set as Ship Alone ============
-SELECT *        
-FROM STSTYL00   
-WHERE STSHAL = 2
+SELECT STBRCD,STDLM              
+FROM STSTYL00                    
+WHERE STSHAL = 2 AND STSTAT <> 90
+ORDER BY STDLM DESC              
+============== Returns SKUs Where bundle Quantity > 1 And Is not equal to sell quantity ============
+SELECT STBRCD,STDLM                                    
+FROM STSTYL00                                          
+WHERE STBNQT > 1 AND STSTAT <> 90  AND STBNQT <> STNUM1
+ORDER BY STDLM DESC                                    
+============== Returns SKUs Where Sell Quantity > 1 And Is not equal to bundle quantity ============
+SELECT STBRCD,STDLM                                    
+FROM STSTYL00                                          
+WHERE STNUM1 > 1 AND STSTAT <> 90  AND STBNQT <> STNUM1
+ORDER BY STDLM DESC
+============== Returns SKUs With No Hazardous Material Version ============
+SELECT STBRCD,STDLM                                    
+FROM STSTYL00                                          
+WHERE STSTAT <> 90  AND STUNIN = ' ' AND STHZCD = 'Y'
+ORDER BY STDLM DESC
+============== Returns SKUs Where SKU Is Marked As Hazmat With  ============
+SELECT STBRCD,STDLM                
+FROM STSTYL00                      
+WHERE STSTAT <> 90 AND STHZCD = 'Y'
+ORDER BY STDLM DESC                
+
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
 SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
