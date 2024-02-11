@@ -1,36 +1,7 @@
 ===================================================================
 -- This our group SQL spaced out for development purposes.
 ===================================================================
-SELECT CHSTOR AS Store,                                            
-(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE CART.CHSTOR=CHSTOR AND 
-CHMIS4!=' ' AND CHTCR<'190000' AND CHPRWV LIKE '20240118%%'        
-)AS Lane,                                                          
-                                                                   
-COUNT(*)AS CountQTY,                                               
-                                                                   
-COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END) AS UnAssigned,     
-                                                                   
-COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END) AS Assigned,       
-                                                                   
-COUNT(CASE WHEN CHSTAT IN ('10','20') AND CHAUST=' ' THEN 1        
-ELSE NULL END) AS UnAudited,                                       
-                                                                   
-(CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN                        
-1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS Audited,       
 
-COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL END)
-AS UnBoxed,                                                      
-                                                                 
-(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE                
-NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized       
-                                                                 
-FROM CHCART00 AS CART                                            
-WHERE CHCRTP IN ('BOX','ERR') AND CHTCR<'190000'                 
-AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE                
-                                                                 
-'20240118%%'                                                     
-GROUP BY CHSTOR                                                  
-ORDER BY Palletized DESC,AUDITED DESC,UnAudited ASC, Unassigned ASC,LANE           
 
 ===================================================================
 -- This our lane SQL spaced out for development purposes.
