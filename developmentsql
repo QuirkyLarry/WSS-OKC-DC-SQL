@@ -63,8 +63,11 @@ FROM PHPICK00 AS PICK
 WHERE PHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE           
 WDWVST = 20 AND  WDIATY = ' ')                               
                                                              
-ORDER BY PHSHST ASC,PHSHZP                                   
-
+ORDER BY PHSHST ASC,PHSHZP
+============== Returns SKUs set as Ship Alone ============
+SELECT *        
+FROM STSTYL00   
+WHERE STSHAL = 2
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
 SELECT STBRCD AS SKU, STBNQT AS BUNDLE_QTY, STNUM1 AS SELL_QTY, STNUM3 AS CASE_QTY
