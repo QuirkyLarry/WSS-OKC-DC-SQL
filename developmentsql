@@ -36,26 +36,34 @@ ORDER BY Palletized DESC,AUDITED DESC, UNASSIGNED ASC, LANE
 ===================================================================
 -- This our lane SQL spaced out for development purposes.
 ===================================================================
+SELECT PHSHTO AS STORE,CHAR(PHSHST,3)AS STATE ,                     
+CHAR(TRIM(REPLACE(ROUND(PHESWT,1),'0000',' ')))AS WeightInLBs,      
+CHAR(                                                               
+(CASE WHEN (SELECT CHAR(TRIM(REPLACE(ROUND(SUM(PHESWT),1),'0000',   
+' '))) FROM PHPICK00 WHERE PICK.PHSHTO = PHSHTO AND PHPSTF = '10')  
+ IS NULL THEN '0' ELSE (SELECT CHAR(TRIM(REPLACE(ROUND(SUM(PHESWT)  
+,1),'0000',                                                         
+' '))) FROM PHPICK00 WHERE PICK.PHSHTO = PHSHTO AND PHPSTF = '10')  
+END)                      ,15)                                      
+                                                    AS WeightInPool,
+(SELECT  CHAR(COUNT(*))  FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV   
+AND PICK.PHSHTO = CHSTOR AND CHCRTP IN ('BOX','ERR')) AS GroupQTY,  
+(SELECT CHAR(COUNT(*))  FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV    
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'LBL') AS LBLs,               
+                                                                    
+(SELECT CHAR(COUNT(*))   FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV   
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HTRs,               
 
-SELECT PHSHTO AS STORE,TRIM(PHSHST) AS STATE,TRIM(PHESWT)AS Weight,
-
-(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP IN ('BOX','ERR')) AS GroupQTY,
-
-(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'LBL') AS LBLs,
-
-(SELECT COUNT(*) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HTRs,
-
-(SELECT COUNT(*) / 4 FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
-AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HeaterPLTS
-
-FROM PHPICK00 AS PICK
-WHERE PHPRWV LIKE
-'20240119010'
-AND PHSVIA NOT LIKE '%%%U%%%'
-ORDER BY PHSHST ASC,PHSHZP
+(SELECT CHAR(COUNT(*) / 4)     FROM CHCART00 WHERE CHPRWV =  
+                                                  PICK.PHPRWV
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HeaterPLTS   
+                                                             
+                                                             
+FROM PHPICK00 AS PICK                                        
+WHERE PHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE           
+WDWVST = 20 AND  WDIATY = ' ')                               
+                                                             
+ORDER BY PHSHST ASC,PHSHZP                                   
 
 ============== Once a Week SQL ============
 -- Returns all SKUs where the bundle quantity doesn't equal the sell quantity.
