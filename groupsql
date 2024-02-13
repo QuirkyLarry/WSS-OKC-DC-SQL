@@ -24,13 +24,23 @@ UNASSIGNED ASC, LANE
 ===================================================================
 -- This grabs the total amount of group pick for a wave.
 ===================================================================
-SELECT CHPRWV AS Wave, COUNT (*)AS CARTONS        
-FROM CHCART00                                     
-WHERE CHCRTP IN ('BOX','ERR') AND CHPRWV LIKE     
-'20240102%%'                                      
-AND CHSVIA NOT LIKE '%%%U%%%' AND CHTCR < '190000'
-AND CHSTAT <> 99
-GROUP BY CHPRWV                                                   
+SELECT PHSHTO AS STORE,CHAR(PHSHST,3)AS STATE,CHAR(TRIM(REPLACE(ROUN
+D(PHESWT,1),'0000',' ')))AS WeightInLBs,CHAR((CASE WHEN (SELECT CHAR
+(TRIM(REPLACE(ROUND(SUM(PHESWT),1),'0000',' '))) FROM PHPICK00 WHERE
+ PICK.PHSHTO = PHSHTO AND PHPSTF = '10')IS NULL THEN '0' ELSE (SELEC
+T CHAR(TRIM(REPLACE(ROUND(SUM(PHESWT),1),'0000',' '))) FROM PHPICK00
+  WHERE PICK.PHSHTO = PHSHTO AND PHPSTF = '10') END),15) AS WeightIn
+Pool,(SELECT CHAR(COUNT(*)) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV
+ AND PICK.PHSHTO = CHSTOR AND CHCRTP IN ('BOX','ERR')) AS GroupQTY, 
+(SELECT CHAR(COUNT(*))  FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV    
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'LBL') AS LBLs,               
+(SELECT CHAR(COUNT(*))   FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV   
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HTRs,               
+(SELECT CHAR(COUNT(*) / 4) FROM CHCART00 WHERE CHPRWV = PICK.PHPRWV 
+AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HeaterPLTS          
+FROM PHPICK00 AS PICK WHERE PHPRWV IN (SELECT WDPRWV FROM WDWAVE00  
+WHERE WDWVST = 20 AND  WDIATY = ' ') AND PHPSTF < 40                
+ORDER BY PHSHST ASC,PHSHZP                                                                                           
 
 ===================================================================
 -- Testing, Returns stores from a given wave sorted by state and then ordered by weight.
