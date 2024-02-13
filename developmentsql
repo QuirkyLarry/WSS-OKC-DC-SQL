@@ -61,7 +61,7 @@ AND PICK.PHSHTO = CHSTOR AND CHCRTP = 'HTR') AS HeaterPLTS
                                                              
 FROM PHPICK00 AS PICK                                        
 WHERE PHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE           
-WDWVST = 20 AND  WDIATY = ' ')                               
+WDWVST = 20 AND  WDIATY = ' ') AND PHPSTF < 40                              
                                                              
 ORDER BY PHSHST ASC,PHSHZP
 ============== Returns SKUs set as Ship Alone ============
