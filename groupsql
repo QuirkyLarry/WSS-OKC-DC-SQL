@@ -1,31 +1,8 @@
 -- Made with love by Larry M & Tim D.
 -- Change the 01 and 18 in '20240118%%' 07 = Month, 17 = Day
 -- All SQL excludes status 99(Cancelled) cartons.
-
 ===================================================================
 -- This grabs the total amount of group pick by wave.
-[Store #, Lane, Cartons, Audited(Yes/No),NeedAudit,OnPallet(Yes/No),ToBeBoxed,Printed,InPacking]
-===================================================================
-
-SELECT CHSTOR AS Store,(SELECT DISTINCT CHMIS4 FROM CHCART00 WHERE C
-ART.CHSTOR=CHSTOR AND CHMIS4!=' ' AND CHTCR<'190000' AND CHPRWV LIKE
- '20240119%%' AND CHSTOR <> ' '
-
-)AS Lane,COUNT(*)AS CountQTY,COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE
-NULL END) AS UnAssigned,COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL
-END) AS Assigned,COUNT(CASE WHEN CHSTAT IN ('10','20') AND CHAUST=
-' ' THEN 1 ELSE NULL END) AS UnAudited,(CASE WHEN COUNT (CASE WHEN
-CHAUST!=' 'THEN 1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS
-Audited,COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE NULL
- END)AS UnBoxed,(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE
-NULL END) = COUNT(*) THEN 'Yes'ELSE'No' END) AS Palletized
-FROM CHCART00 AS CART WHERE CHCRTP IN ('BOX','ERR') AND CHTCR<'19000
-0' AND CHMIS4 != ' ' AND CHSTAT<>99  AND CHPRWV LIKE
-'20240119%%'
-GROUP BY CHSTOR
-ORDER BY Palletized DESC,AUDITED DESC, UNASSIGNED ASC, LANE
-===================================================================
--- This grabs the total amount of group pick by wave.(Waiting For Approval)
 [Store #, Lane, Cartons, Audited(Yes/No),NeedAudit,OnPallet(Yes/No),ToBeBoxed,Printed,InPacking]
 ===================================================================
 SELECT (CASE WHEN CHSTOR=' ' THEN CHPCTL  ELSE CHSTOR END) AS Store,
@@ -42,7 +19,8 @@ TP IN ('BOX','ERR') AND CHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE
  WDWVST = 20 AND  WDIATY = ' ') AND CHSTAT < 85 GROUP BY (CASE WHEN 
 CHSTOR = ' ' THEN CHPCTL ELSE CHSTOR END),(CASE WHEN CHMIS4 <>' ' TH
 EN CHMIS4 ELSE NULL END) ORDER BY Palletized DESC,AUDITED DESC,     
-UNASSIGNED ASC, LANE                                                
+UNASSIGNED ASC, LANE    
+
 ===================================================================
 -- This grabs the total amount of group pick for a wave.
 ===================================================================
