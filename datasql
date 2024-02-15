@@ -6,6 +6,13 @@ FROM STSTYL00
 WHERE STCRTP = 'BOX'
 
 =========================================================
+-- Returns all SKUs set-up as ERR carton type with no carton break attribute.
+=========================================================
+SELECT STBRCD                        
+FROM STSTYL00                        
+WHERE STCRTP = 'ERR' AND STICBR = ' '
+
+=========================================================
 Returns SKUs set as Ship Alone
 =========================================================
 SELECT STBRCD,STDLM              
@@ -66,9 +73,6 @@ GROUP BY CONCAT(IDSTYL,IDSSFX), IDUNLN, IDUNWD,IDUNHT,IDIPDM,IDIPD2,
 IDIPD3,IDIPWT,IDUNWT,IDIPQT                                         
 ORDER BY IDIPDM DESC
 
-=========================================================
---
-=========================================================
 =========================================================
 --
 =========================================================
