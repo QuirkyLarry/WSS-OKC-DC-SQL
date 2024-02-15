@@ -1,6 +1,4 @@
 -- Made with love by Larry M & Tim D.
--- Change the 01 and 18 in '20240118%%' 07 = Month, 17 = Day
--- All SQL excludes status 99(Cancelled) cartons.
 ===================================================================
 -- This grabs the total amount of group pick by wave.
 [Store #, Lane, Cartons, Audited(Yes/No),NeedAudit,OnPallet(Yes/No),ToBeBoxed,Printed,InPacking]
