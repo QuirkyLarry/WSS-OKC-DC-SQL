@@ -90,6 +90,7 @@ FROM STSTYL00
 WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5) 
  AND STNUM3 > 1 AND STNUM1 = 1                          
 AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '   
+
 =========================================================
 --
 =========================================================
