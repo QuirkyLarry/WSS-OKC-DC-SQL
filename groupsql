@@ -19,7 +19,18 @@ TP IN ('BOX','ERR') AND CHPRWV IN (SELECT WDPRWV FROM WDWAVE00 WHERE
  WDWVST = 20 AND  WDIATY = ' ') AND CHSTAT < 85 GROUP BY (CASE WHEN 
 CHSTOR = ' ' THEN CHPCTL ELSE CHSTOR END),(CASE WHEN CHMIS4 <>' ' TH
 EN CHMIS4 ELSE NULL END) ORDER BY Palletized DESC,AUDITED DESC,     
-UNASSIGNED ASC, LANE    
+UNASSIGNED ASC, LANE  
+
+===================================================================
+-- This grabs the total amount of group pick for a wave.
+===================================================================
+SELECT CHPRWV AS Wave, COUNT (*)AS CARTONS        
+FROM CHCART00                                     
+WHERE CHCRTP IN ('BOX','ERR') AND CHPRWV LIKE     
+'20240102%%'                                      
+AND CHSVIA NOT LIKE '%%%U%%%' AND CHTCR < '190000'
+AND CHSTAT <> 99
+GROUP BY CHPRWV
 
 ===================================================================
 -- This grabs the total amount of group pick for a wave.
