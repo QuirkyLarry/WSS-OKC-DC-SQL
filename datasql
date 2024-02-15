@@ -8,7 +8,7 @@ WHERE STCRTP = 'BOX'
 =========================================================
 -- Returns all SKUs set-up as ERR carton type with no carton break attribute.
 =========================================================
-SELECT STBRCD                        
+SELECT STBRCD AS SKU,STCRTP AS CartonType,STICBR AS CartonBreakAtt                     
 FROM STSTYL00                        
 WHERE STCRTP = 'ERR' AND STICBR = ' '
 
