@@ -74,8 +74,14 @@ IDIPD3,IDIPWT,IDUNWT,IDIPQT
 ORDER BY IDIPDM DESC
 
 =========================================================
---
+Returns SKUs Where Sell Quantity > 1 And Is not equal to bundle quantity
 =========================================================
+SELECT STBRCD AS SKU,STCRTP AS CartonType,STNUM3, STNUM1
+FROM STSTYL00                                           
+WHERE (STCDIM > 21 OR STCDM2 > 21 OR STCDM3 > 21)       
+ AND STNUM3 > 1 AND STNUM1 = 1                          
+AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '   
+
 =========================================================
 --
 =========================================================
