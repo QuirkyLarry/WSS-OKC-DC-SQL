@@ -5,27 +5,67 @@ SELECT STBRCD
 FROM STSTYL00       
 WHERE STCRTP = 'BOX'
 
+=========================================================
+Returns SKUs set as Ship Alone
+=========================================================
+SELECT STBRCD,STDLM              
+FROM STSTYL00                    
+WHERE STSHAL = 2 AND STSTAT <> 90
+ORDER BY STDLM DESC              
 
+=========================================================
+Returns SKUs Where bundle Quantity > 1 And Is not equal to sell quantity
+=========================================================
+SELECT STBRCD,STDLM                                    
+FROM STSTYL00                                          
+WHERE STBNQT > 1 AND STSTAT <> 90  AND STBNQT <> STNUM1
+ORDER BY STDLM DESC  
 
 =========================================================
---
+Returns SKUs Where Sell Quantity > 1 And Is not equal to bundle quantity
 =========================================================
+SELECT STBRCD,STDLM                                    
+FROM STSTYL00                                          
+WHERE STNUM1 > 1 AND STSTAT <> 90  AND STBNQT <> STNUM1
+ORDER BY STDLM DESC
+                                                
+=========================================================
+Returns SKUs With No Hazardous Material Version That Are Hazmat
+=========================================================
+SELECT STBRCD,STDLM                                    
+FROM STSTYL00                                          
+WHERE STSTAT <> 90  AND STUNIN = ' ' AND STHZCD = 'Y'
+ORDER BY STDLM DESC
 
 =========================================================
---
+--Returns SKUs Where SKU Is Marked As Hazmat
 =========================================================
+SELECT STBRCD,STDLM                
+FROM STSTYL00                      
+WHERE STSTAT <> 90 AND STHZCD = 'Y'
+ORDER BY STDLM DESC
+
 =========================================================
---
+Pulls skus with sell quantity of one and unit sizes = case sizes
 =========================================================
-=========================================================
---
-=========================================================
-=========================================================
---
-=========================================================
-=========================================================
---
-=========================================================
+SELECT CONCAT(IDSTYL,IDSSFX), IDIPQT,IDUNLN,IDUNWD,IDUNHT,IDUNWT,   
+        IDIPDM,IDIPD2,IDIPD3,IDIPWT                                 
+FROM IDCASE00 AS C                                                  
+WHERE IDIPQT > 1                                                    
+AND IDIPDM = IDUNLN AND IDUNWT = IDIPWT AND                         
+    IDIPD2 = IDUNWD AND                                             
+    IDIPD3 = IDUNHT AND CONCAT(IDSTYL,IDSSFX) = (SELECT STBRCD      
+FROM STSTYL00 WHERE STNUM1 <> STNUM3 AND CONCAT(C.IDSTYL,C.IDSSFX)  
+= STBRCD AND STNUM1= 1)                                             
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+GROUP BY CONCAT(IDSTYL,IDSSFX), IDUNLN, IDUNWD,IDUNHT,IDIPDM,IDIPD2,
+IDIPD3,IDIPWT,IDUNWT,IDIPQT                                         
+ORDER BY IDIPDM DESC
+
 =========================================================
 --
 =========================================================
