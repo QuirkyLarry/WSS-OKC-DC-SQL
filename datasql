@@ -95,5 +95,19 @@ WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5)
 AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '      
 
 =========================================================
---
+Returns SKUs Where Carton Type is Blank & One dimension is longer than 20.5 inches and is in active.
 =========================================================
+SELECT STBRCD AS SKU,STCRTP AS CartonType,STCDIM AS Length,    
+STCDM2 AS Width, STCDM3 AS Height                              
+                                                               
+FROM STSTYL00 AS ST                                            
+WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5)        
+ AND STNUM3 > 1 AND STNUM1 = 1                                 
+AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '          
+AND STBRCD = (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX)            
+FROM ACLOCN00                                                  
+WHERE (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%') AND ST.STBRCD = 
+CONCAT(ACSTYL,ACSSFX)                                          
+GROUP BY CONCAT(ACSTYL,ACSSFX)        )                        
+                                                               
+ORDER BY STDLM DESC                                            
