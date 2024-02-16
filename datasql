@@ -85,11 +85,13 @@ AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '
 =========================================================
 Returns SKUs Where Carton Type is Blank & One dimension is longer than 20.5 inches.
 =========================================================
-SELECT STBRCD AS SKU,STCRTP AS CartonType,STNUM3, STNUM1
-FROM STSTYL00                                           
-WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5) 
- AND STNUM3 > 1 AND STNUM1 = 1                          
-AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '   
+SELECT STBRCD AS SKU,STCRTP AS CartonType,STCDIM AS Length,
+STCDM2 AS Width, STCDM3 AS Height                          
+                                                           
+FROM STSTYL00                                              
+WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5)    
+ AND STNUM3 > 1 AND STNUM1 = 1                             
+AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '      
 
 =========================================================
 --
