@@ -108,3 +108,15 @@ DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE
 (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%') AND ST.STBRCD =
 CONCAT(ACSTYL,ACSSFX)  GROUP BY CONCAT(ACSTYL,ACSSFX)   )
 ORDER BY STDLM DESC
+
+=========================================================
+Should return majority of SKUs that is sold as a pack in active.
+=========================================================
+SELECT STBRCD AS SKU,STCOLD                                        
+FROM STSTYL00 AS ST WHERE (STCOLD LIKE '%EQUALS%' OR STCOLD LIKE   
+'%@ 1%' OR STCOLD LIKE '@1 %' OR STCOLD LIKE '%/PK' OR STCOLD LIKE 
+'%/PACK') AND STTKTP = ' ' AND STNUM1 = 1 AND STNUM1 <> STNUM3     
+AND STSTAT < 90 AND STBRCD = (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX)
+FROM ACLOCN00 WHERE (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')AND    
+ST.STBRCD = CONCAT(ACSTYL,ACSSFX)  GROUP BY CONCAT(ACSTYL,ACSSFX) )
+ORDER BY STBRCD DESC                                               
