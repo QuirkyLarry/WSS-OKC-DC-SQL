@@ -6,11 +6,12 @@ FROM STSTYL00
 WHERE STCRTP = 'BOX'                                              
 
 =========================================================
--- Returns all SKUs set-up as ERR carton type with a carton break attribute.
+Returns all SKUs set-up as ERR carton type with a carton break attribute.
+Do not set carton break attribute.
 =========================================================
-SELECT STBRCD AS SKU,STCRTP AS CartonType,STICBR AS CartonBreakAtt                     
-FROM STSTYL00                        
-WHERE STCRTP = 'ERR' AND STICBR <> ' '
+SELECT STBRCD AS SKU,STCRTP AS CartonType,STICBR AS CartonBreakAtt
+FROM STSTYL00                                                     
+WHERE STCRTP = 'ERR' AND STICBR <> ' '                            
 
 =========================================================
 Returns SKUs set as Ship Alone
