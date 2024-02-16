@@ -22,6 +22,10 @@ UNASSIGNED ASC, LANE
 ==================================================================
 -- Testing, Returns stores from a given wave sorted by state and then ordered by weight.
 ===================================================================
+
+LUIS - BELOW THIS
+
+
 SELECT PHSHTO AS STORE,CHAR(PHSHST,3)AS STATE,CHAR(TRIM(REPLACE(ROUN
 D(PHESWT,1),'0000',' ')))AS WeightInLBs,CHAR((CASE WHEN (SELECT CHAR
 (TRIM(REPLACE(ROUND(SUM(PHESWT),1),'0000',' '))) FROM PHPICK00 WHERE
