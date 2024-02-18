@@ -119,4 +119,15 @@ FROM STSTYL00 AS ST WHERE (STCOLD LIKE '%EQUALS%' OR STCOLD LIKE
 AND STSTAT < 90 AND STBRCD = (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX)
 FROM ACLOCN00 WHERE (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')AND    
 ST.STBRCD = CONCAT(ACSTYL,ACSSFX)  GROUP BY CONCAT(ACSTYL,ACSSFX) )
-ORDER BY STBRCD DESC                                               
+ORDER BY STBRCD DESC        
+
+=========================================================
+Returns the total amount of VNA picks by wave.
+=========================================================
+SELECT COUNT(DISTINCT PSPLN), PSPRWV                     
+                                                                                                              
+FROM PSPULL00                                            
+WHERE PSPRWV LIKE '202401%%%%%' AND PSCRT ='2 '                     
+AND PSCUWG = 'VNA' AND PSSTAT < 91
+GROUP BY PSPRWV                                          
+ORDER BY PSPRWV                                          
