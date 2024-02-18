@@ -146,4 +146,20 @@ COUNT((CASE WHEN CHCRTP = 'ERR' THEN 1 ELSE NULL END)) AS ERR
 FROM CHCART00                                                    
 WHERE CHPRWV LIKE '2022%%%%%%%' AND CHCRTP IN ('BOX','ERR','SHA')
 AND CHSTAT <> 99                                                 
-GROUP BY CHDCR ORDER BY CHDCR                                    
+GROUP BY CHDCR ORDER BY CHDCR      
+=========================================================
+Returns the total amount of Active Picks by Date.
+=========================================================
+SELECT                                                          
+DATE(TIMESTAMP_FORMAT(CHAR(PSDCR) ,'YYYYMMDD')) AS DATE,        
+                                                                
+COUNT( DISTINCT                                                 
+CONCAT(PSPLN,  CONCAT(CONCAT(CHAR( PSAISL,3),CHAR(PSBAY,3)  )   
+                                              ,CHAR(PSLEVL ,3)))
+AS Floor                                                        
+                                                                
+FROM PSPULL00                                                   
+WHERE PSPRWV LIKE '2023%%%%%%%'                                 
+AND PSCRT = '50' AND PSCUWA = 'MEZ' AND PSSTAT  = 90            
+GROUP BY PSDCR                                                  
+ORDER BY PSDCR                                                  
