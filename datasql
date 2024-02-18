@@ -130,4 +130,20 @@ FROM PSPULL00
 WHERE PSPRWV LIKE '202401%%%%%' AND PSCRT ='2 '                     
 AND PSCUWG = 'VNA' AND PSSTAT < 91
 GROUP BY PSPRWV                                          
-ORDER BY PSPRWV                                          
+ORDER BY PSPRWV           
+
+=========================================================
+Returns the total amount of Active Cartons by Date.
+=========================================================
+SELECT                                                           
+DATE(TIMESTAMP_FORMAT(CHAR(CHDCR) ,'YYYYMMDD')),                 
+COUNT((CASE WHEN CHCRSZ = 'LGE' THEN 1 ELSE NULL END)) AS LBox,  
+COUNT((CASE WHEN CHCRSZ = 'MED' THEN 1 ELSE NULL END)) AS MBox,  
+COUNT((CASE WHEN CHCRSZ = 'SML' THEN 1 ELSE NULL END)) AS SBox,  
+COUNT((CASE WHEN CHCRSZ = 'SHA' AND CHCRTP = 'BOX'               
+                                THEN 1 ELSE NULL END)) AS SHA,   
+COUNT((CASE WHEN CHCRTP = 'ERR' THEN 1 ELSE NULL END)) AS ERR    
+FROM CHCART00                                                    
+WHERE CHPRWV LIKE '2022%%%%%%%' AND CHCRTP IN ('BOX','ERR','SHA')
+AND CHSTAT <> 99                                                 
+GROUP BY CHDCR ORDER BY CHDCR                                    
