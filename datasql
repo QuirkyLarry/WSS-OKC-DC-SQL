@@ -75,7 +75,7 @@ IDIPD3,IDIPWT,IDUNWT,IDIPQT
 ORDER BY IDIPDM DESC
 
 =========================================================
-Returns SKUs Where Sell Quantity > 1 And Is not equal to bundle quantity
+Returns SKUs Where Carton Type is Blank & One dimension is longer than 21 inches.
 =========================================================
 SELECT STBRCD AS SKU,STCRTP AS CartonType,STNUM3, STNUM1
 FROM STSTYL00                                           
