@@ -163,3 +163,15 @@ WHERE PSPRWV LIKE '2023%%%%%%%'
 AND PSCRT = '50' AND PSCUWA = 'MEZ' AND PSSTAT  = 90            
 GROUP BY PSDCR                                                  
 ORDER BY PSDCR                                                  
+
+=========================================================
+Returns ALL Skus that are LBL Picks in casepick locations In VN1/118
+=========================================================
+SELECT CONCAT(ACSTYL,ACSSFX) AS SKU           , ACAISL AS AISLE,  
+ACBAY AS BAY, ACLEVL AS LEVEL,ACPDZN AS PickDeterZone, ACAGZN AS  
+AssignmentZone                                                    
+                                                                  
+FROM ACLOCN00 AS AC WHERE ACAISL IN ('VN1','118') AND ACWKGR =    
+'CASE' AND ACLEVL LIKE '10%' AND  CONCAT(ACSTYL,ACSSFX) =         
+                                 (SELECT STBRCD FROM STSTYL00 AS S
+WHERE STBRCD = CONCAT(AC.ACSTYL,AC.ACSSFX) AND STCRTP LIKE 'LB%') 
