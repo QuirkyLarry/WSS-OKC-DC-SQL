@@ -11,8 +11,8 @@ COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END) AS UnAssigned,
                                                                     
 COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END) AS Assigned,        
                                                                     
-COUNT(CASE WHEN CHSTAT IN ('10','20') AND CHAUST=' ' THEN 1         
-ELSE NULL END) AS UnAudited,                                        
+COUNT(CASE WHEN CHSTAT IN ('10','20','30') AND CHAUST=' ' THEN 1         
+ELSE NULL END) AS UnAudited,
                                                                     
 (CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN                         
 1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END) AS Audited,        
