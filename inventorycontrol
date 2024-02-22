@@ -1,1 +1,75 @@
+=========================================================
+This SQL returns all SKUs in an active location.
+Specifically for SKUs with a unit weight that is equal to
+the case weight.
+Search Criteria
+  1. Sell quantity is One
+  2. Case quantity greater than one
+  3. Checks if SKU is in active
+  If all is true then a SKU is returned.
+=========================================================
+SELECT STBRCD AS SKU, STUNWT AS Unit_Weight,                        
+(SELECT DISTINCT CQIPWT FROM W18BD00202/CQSTYL00 WHERE S.STUNWT =   
+CQIPWT AND S.STBRCD =  CONCAT(CONCAT(CQSTYL,CQSSFX),CQCOLR)) AS     
+Case_Weight,                                                        
+                                                                    
+RTRIM(STNUM1, '0000') AS SellQTY, RTRIM(STNUM3, '0000') AS CaseQTY, 
+STBNQT AS BundleQTY                                                 
+FROM STSTYL00 AS S WHERE STNUM3 > 1 AND STNUM1 = 1 AND STBRCD IN    
+                                                                    
+(SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE (ACAISL  
+LIKE '7%%' OR ACAISL LIKE '8%%') GROUP BY CONCAT(ACSTYL,ACSSFX)) AND
+                                                                    
+STBRCD IN (SELECT DISTINCT CONCAT(CQSTYL,CQSSFX) FROM W18BD00202/   
+CQSTYL00 WHERE S.STUNWT = CQIPWT )                                  
 
+=========================================================
+This SQL returns SKUs Where Bundle Quantity Is
+greater than 1 and not equal to sell quantity.
+Search Criteria
+  1. Bundle quantity is greater than one.
+  2. Sell quantity is not equal to bundle quantity.
+  3. Checks location table for the SKU.
+  If all is true then a SKU is returned.
+=========================================================
+SELECT STBRCD AS SKU, RTRIM(STNUM1, '0000') As SellQTY,           
+STBNQT AS BundleQTY,STUSER AS LastModified                        
+                                                                  
+FROM STSTYL00 AS S WHERE                                          
+STBRCD IN ( SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM W18BD00202/
+ACLOCN00 ) AND STBNQT > 1 AND STSTAT <> 90 AND STBNQT <> STNUM1   
+ORDER BY STUSER      
+=========================================================
+This SQL returns SKUs Where one of the SKU dimensions
+is greater than 20.5 inches.
+Search Criteria
+  1. Sell quantity is equal to one.
+  2. Case quantity is greater than one.
+  3. Checks if carton type is blank.
+  4. Checks if the SKU is in active.
+  If all is true then a SKU is returned.
+=========================================================
+SELECT STBRCD AS SKU,STCRTP AS CartonType,STCDIM AS Length,       
+STCDM2 AS Width, STCDM3 AS Height,STUSER AS LastModified          
+                                                                  
+FROM STSTYL00 AS ST                                               
+WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5)
+AND STNUM3 > 1 AND STNUM1 = 1 AND STSTAT < 90 AND STCRTP = ' '
+AND STBRCD IN (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00
+WHERE (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')) ORDER BY STUSER
+=========================================================
+This SQL returns SKUs with no pick messages that has a description
+stating 1 unit is equal to a pack quantity.
+Search Criteria
+  1. Sell quantity is equal to one.
+  2. Searches description field for pack identifiers.
+  3. Checks if Pick Message field is blank.
+  4. Checks if the SKU is in active.
+  If all is true then a SKU is returned.
+=========================================================
+SELECT STBRCD AS SKU,STCOLD AS Description, STUSER AS LastModified  
+FROM STSTYL00 AS ST WHERE (STCOLD LIKE '%EQUALS%' OR STCOLD LIKE    
+'%@ 1%' OR STCOLD LIKE '@1 %' OR STCOLD LIKE '%/PK' OR STCOLD LIKE  
+'%/PACK') AND STTKTP = ' ' AND STNUM1 = 1 AND STSTAT < 90 AND STBRCD
+ IN (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE      
+(ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')) ORDER BY STUSER              
