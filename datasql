@@ -175,3 +175,23 @@ FROM ACLOCN00 AS AC WHERE ACAISL IN ('VN1','118') AND ACWKGR =
 'CASE' AND ACLEVL LIKE '10%' AND  CONCAT(ACSTYL,ACSSFX) =         
                                  (SELECT STBRCD FROM STSTYL00 AS S
 WHERE STBRCD = CONCAT(AC.ACSTYL,AC.ACSSFX) AND STCRTP LIKE 'LB%') 
+
+
+=========================================================
+Returns ALL SKUs in Active where the piece weight is equal to the case weight.
+=========================================================
+SELECT STBRCD,STUNWT                                              
+FROM STSTYL00 AS S                                                
+WHERE STNUM3 > 1 AND STNUM1 = 1 AND                               
+     STBRCD =                                                     
+    (SELECT                                                       
+    DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE            
+    (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%') AND S.STBRCD =       
+    CONCAT(ACSTYL,ACSSFX)  GROUP BY CONCAT(ACSTYL,ACSSFX)   )     
+ AND                                                              
+STBRCD = ( SELECT DISTINCT TRIM(CONCAT(CONCAT(CQSTYL,CQSSFX),     
+                           CQCOLR))                               
+              FROM W18BD00202/CQSTYL00 WHERE S.STUNWT = CQIPWT    
+ AND   S.STBRCD =  CONCAT(CONCAT(CQSTYL,CQSSFX), CQCOLR)         )
+                                                                  
+                                                                  
