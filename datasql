@@ -22,14 +22,6 @@ WHERE STSHAL = 2 AND STSTAT <> 90
 ORDER BY STDLM DESC              
 
 =========================================================
-Returns SKUs Where bundle Quantity > 1 And Is not equal to sell quantity
-=========================================================
-SELECT STBRCD,STDLM                                    
-FROM STSTYL00                                          
-WHERE STBNQT > 1 AND STSTAT <> 90  AND STBNQT <> STNUM1
-ORDER BY STDLM DESC  
-
-=========================================================
 Returns SKUs Where Sell Quantity > 1 And Is not equal to bundle quantity
 =========================================================
 SELECT STBRCD,STDLM                                    
@@ -51,54 +43,7 @@ ORDER BY STDLM DESC
 SELECT STBRCD,STDLM                
 FROM STSTYL00                      
 WHERE STSTAT <> 90 AND STHZCD = 'Y'
-ORDER BY STDLM DESC
-
-=========================================================
-Returns SKUs Where Carton Type is Blank & One dimension is longer than 21 inches.
-=========================================================
-SELECT STBRCD AS SKU,STCRTP AS CartonType,STNUM3, STNUM1
-FROM STSTYL00                                           
-WHERE (STCDIM > 21 OR STCDM2 > 21 OR STCDM3 > 21)       
- AND STNUM3 > 1 AND STNUM1 = 1                          
-AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '   
-
-=========================================================
-Returns SKUs Where Carton Type is Blank & One dimension is longer than 20.5 inches.
-=========================================================
-SELECT STBRCD AS SKU,STCRTP AS CartonType,STCDIM AS Length,
-STCDM2 AS Width, STCDM3 AS Height                          
-                                                           
-FROM STSTYL00                                              
-WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5)    
- AND STNUM3 > 1 AND STNUM1 = 1                             
-AND STNUM3 <> STNUM1 AND STSTAT < 90 AND STCRTP = ' '      
-
-=========================================================
-Returns SKUs Where Carton Type is Blank & One dimension is longer than 20.5 inches and is in active.
-=========================================================
-SELECT STBRCD AS SKU,STCRTP AS CartonType,STCDIM AS Length,
-STCDM2 AS Width, STCDM3 AS Height
-
-FROM STSTYL00 AS ST
-WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5)
-AND STNUM3 > 1 AND STNUM1 = 1 AND STNUM3 <> STNUM1
-AND STSTAT < 90 AND STCRTP = ' ' AND STBRCD =  (SELECT
-DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE
-(ACAISL LIKE '7%%' OR ACAISL LIKE '8%%') AND ST.STBRCD =
-CONCAT(ACSTYL,ACSSFX)  GROUP BY CONCAT(ACSTYL,ACSSFX)   )
-ORDER BY STDLM DESC
-
-=========================================================
-Should return majority of SKUs that is sold as a pack in active.
-=========================================================
-SELECT STBRCD AS SKU,STCOLD AS Description2                        
-FROM STSTYL00 AS ST WHERE (STCOLD LIKE '%EQUALS%' OR STCOLD LIKE   
-'%@ 1%' OR STCOLD LIKE '@1 %' OR STCOLD LIKE '%/PK' OR STCOLD LIKE 
-'%/PACK') AND STTKTP = ' ' AND STNUM1 = 1 AND STNUM1 <> STNUM3     
-AND STSTAT < 90 AND STBRCD = (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX)
-FROM ACLOCN00 WHERE (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')AND    
-ST.STBRCD = CONCAT(ACSTYL,ACSSFX)  GROUP BY CONCAT(ACSTYL,ACSSFX) )
-ORDER BY STBRCD DESC                                                       
+ORDER BY STDLM DESC                                                   
 
 =========================================================
 Returns the total amount of VNA picks by wave.
@@ -125,7 +70,8 @@ COUNT((CASE WHEN CHCRTP = 'ERR' THEN 1 ELSE NULL END)) AS ERR
 FROM CHCART00                                                    
 WHERE CHPRWV LIKE '2022%%%%%%%' AND CHCRTP IN ('BOX','ERR','SHA')
 AND CHSTAT <> 99                                                 
-GROUP BY CHDCR ORDER BY CHDCR      
+GROUP BY CHDCR ORDER BY CHDCR  
+
 =========================================================
 Returns the total amount of Active Picks by Date.
 =========================================================
@@ -144,7 +90,7 @@ GROUP BY PSDCR
 ORDER BY PSDCR                                                  
 
 =========================================================
-Returns ALL Skus that are LBL Picks in casepick locations In VN1/118
+Returns ALL SKUs that are LBL Picks in casepick locations In VN1/118
 =========================================================
 SELECT CONCAT(ACSTYL,ACSSFX) AS SKU           , ACAISL AS AISLE,  
 ACBAY AS BAY, ACLEVL AS LEVEL,ACPDZN AS PickDeterZone, ACAGZN AS  
@@ -154,23 +100,3 @@ FROM ACLOCN00 AS AC WHERE ACAISL IN ('VN1','118') AND ACWKGR =
 'CASE' AND ACLEVL LIKE '10%' AND  CONCAT(ACSTYL,ACSSFX) =         
                                  (SELECT STBRCD FROM STSTYL00 AS S
 WHERE STBRCD = CONCAT(AC.ACSTYL,AC.ACSSFX) AND STCRTP LIKE 'LB%') 
-
-
-=========================================================
-Returns ALL SKUs in Active where the piece weight is equal to the case weight.
-=========================================================
-SELECT STBRCD,STUNWT                                              
-FROM STSTYL00 AS S                                                
-WHERE STNUM3 > 1 AND STNUM1 = 1 AND                               
-     STBRCD =                                                     
-    (SELECT                                                       
-    DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE            
-    (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%') AND S.STBRCD =       
-    CONCAT(ACSTYL,ACSSFX)  GROUP BY CONCAT(ACSTYL,ACSSFX)   )     
- AND                                                              
-STBRCD = ( SELECT DISTINCT TRIM(CONCAT(CONCAT(CQSTYL,CQSSFX),     
-                           CQCOLR))                               
-              FROM W18BD00202/CQSTYL00 WHERE S.STUNWT = CQIPWT    
- AND   S.STBRCD =  CONCAT(CONCAT(CQSTYL,CQSSFX), CQCOLR)         )
-                                                                  
-                                                                  
