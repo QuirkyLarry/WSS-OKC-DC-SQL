@@ -1,4 +1,4 @@
-[B]
+Inventory Control SQL Codes
 =========================================================
 This SQL returns all SKUs in an active location.
 Specifically for SKUs with a unit weight that is equal to
@@ -8,21 +8,21 @@ Search Criteria
   2. Case quantity greater than one
   3. Checks if SKU is in active
   If all is true then a SKU is returned.
-=========================================================[/B]
+=========================================================
 SELECT STBRCD AS SKU, STUNWT AS Unit_Weight,                        
 (SELECT DISTINCT CQIPWT FROM W18BD00202/CQSTYL00 WHERE S.STUNWT =   
 CQIPWT AND S.STBRCD =  CONCAT(CONCAT(CQSTYL,CQSSFX),CQCOLR)) AS     
 Case_Weight,                                                        
                                                                     
 RTRIM(STNUM1, '0000') AS SellQTY, RTRIM(STNUM3, '0000') AS CaseQTY, 
-STBNQT AS BundleQTY                                                 
+STBNQT AS BundleQTY, STUSER AS LastModified                         
 FROM STSTYL00 AS S WHERE STNUM3 > 1 AND STNUM1 = 1 AND STBRCD IN    
                                                                     
 (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE (ACAISL  
 LIKE '7%%' OR ACAISL LIKE '8%%') GROUP BY CONCAT(ACSTYL,ACSSFX)) AND
                                                                     
 STBRCD IN (SELECT DISTINCT CONCAT(CQSTYL,CQSSFX) FROM W18BD00202/   
-CQSTYL00 WHERE S.STUNWT = CQIPWT )                                  
+CQSTYL00 WHERE S.STUNWT = CQIPWT ) ORDER BY STUSER                  
 
 =========================================================
 This SQL returns SKUs Where Bundle Quantity Is
