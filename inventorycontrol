@@ -39,6 +39,7 @@ FROM STSTYL00 AS S WHERE
 STBRCD IN ( SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM W18BD00202/
 ACLOCN00 ) AND STBNQT > 1 AND STSTAT <> 90 AND STBNQT <> STNUM1   
 ORDER BY STUSER      
+
 =========================================================
 This SQL returns SKUs Where one of the SKU dimensions
 is greater than 20.5 inches.
@@ -57,6 +58,7 @@ WHERE (STCDIM >=20.5 OR STCDM2 >=20.5 OR STCDM3 >=20.5)
 AND STNUM3 > 1 AND STNUM1 = 1 AND STSTAT < 90 AND STCRTP = ' '
 AND STBRCD IN (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00
 WHERE (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')) ORDER BY STUSER
+
 =========================================================
 This SQL returns SKUs with no pick messages that has a description
 stating 1 unit is equal to a pack quantity.
