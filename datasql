@@ -100,3 +100,23 @@ FROM ACLOCN00 AS AC WHERE ACAISL IN ('VN1','118') AND ACWKGR =
 'CASE' AND ACLEVL LIKE '10%' AND  CONCAT(ACSTYL,ACSSFX) =         
                                  (SELECT STBRCD FROM STSTYL00 AS S
 WHERE STBRCD = CONCAT(AC.ACSTYL,AC.ACSSFX) AND STCRTP LIKE 'LB%') 
+
+
+=========================================================
+IGNORE
+=========================================================
+
+SELECT DATE(TIMESTAMP_FORMAT(CHAR(PLDCR),'YYYYMMDD')) AS Date,   
+                                                                 
+COUNT(CASE                                                       
+WHEN  PLSCWG <> 'VNA' AND PLCRT = 2 AND(PLTSTY IN('1C','1P')  OR 
+PLTSTY IN ('1Y,'1W') AND                                         
+                          THEN 1 ELSE NULL END)                  
+WHEN PLSCWG = 'VNA' THEN 'VNA'                                   
+END                                                              
+                                                                 
+FROM W18BD00202/PLPULL00 AS TSK                                  
+WHERE PLCRT = '2' AND PLTSTY IN('1C','1P')                       
+AND PLPRFN IN (SELECT WDPRWV         FROM WDWAVE00 WHERE WDIATY  
+   IN (' ','WIN')   AND TSK.PLPRFN = WDPRWV)                     
+GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PLDCR),'YYYYMMDD'))          
