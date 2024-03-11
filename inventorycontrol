@@ -77,3 +77,26 @@ FROM STSTYL00 AS ST WHERE (STCOLD LIKE '%EQUALS%' OR STCOLD LIKE
   AND STTKTP = ' ' AND STNUM1 = 1 AND STSTAT < 90 AND STBRCD        
  IN (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00 WHERE      
 (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')) ORDER BY STUSER             
+
+=========================================================
+This SQL returns SKUs where unit DIMS is
+equal to case DIMS.
+Search Criteria
+  1. Sell quantity is equal to one.
+  2. Searches description field for pack identifiers.
+  3. Checks if Pick Message field is blank.
+  4. Checks if the SKU is in active.
+  If all is true then a SKU is returned.
+=========================================================
+SELECT STBRCD AS SKU,STCRTP AS CartonType,STCDIM AS Length,       
+STCDM2 AS Width, STCDM3 AS Height,STUSER AS LastModified          
+                                                                  
+FROM STSTYL00 AS ST                                               
+WHERE                                                             
+    STNUM3 > 1 AND STNUM1 = 1 AND STSTAT < 90 AND STCRTP = ' '    
+AND STBRCD IN (SELECT DISTINCT CONCAT(CQSTYL,CQSSFX) FROM         
+    W18BD00202/                                                   
+    CQSTYL00 WHERE( ST.STCDIM = CQIPDM AND ST.STCDM2 = CQIPD2 AND 
+ST.STCDM3 = CQIPD3))                                              
+AND STBRCD IN (SELECT DISTINCT CONCAT(ACSTYL,ACSSFX) FROM ACLOCN00
+WHERE (ACAISL LIKE '7%%' OR ACAISL LIKE '8%%')) ORDER BY STUSER   
