@@ -139,4 +139,24 @@ WHERE  (PSDASL LIKE  '7%%' OR PSDASL LIKE '8%%') AND
     PSAISL <> 'RCV'                                               
                                                                   
 GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))           
-ORDER BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))           
+ORDER BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))       
+=========================================================
+RETURNS LOCATIONS FOR ACTIVE
+=========================================================
+SELECT CHAR(COUNT((CASE WHEN ACLCK = 'N' THEN 1 ELSE NULL END)))    
+AS TotalAvailable,CHAR(COUNT((CASE WHEN ACLCK = 'Y' THEN 1 ELSE     
+NULL END)))As TotalLocked, CHAR(                                    
+COUNT((CASE WHEN (ACLCK = 'Y' AND ACAISL =    '710') THEN 1 ELSE    
+NULL END)))AS "710QTY",CHAR(                                        
+COUNT((CASE WHEN (ACLCK = 'Y' AND ACAISL =    '712') THEN 1 ELSE    
+NULL END)))AS "712QTY",CHAR(                                        
+COUNT((CASE WHEN (ACLCK = 'Y' AND ACAISL =    '714') THEN 1 ELSE    
+NULL END)))AS "714QTY",CHAR(                                        
+COUNT((CASE WHEN (ACLCK = 'Y' AND ACAISL =    '716') THEN 1 ELSE    
+NULL END)))AS "716QTY",CHAR(COUNT((CASE WHEN (ACLCK = 'Y' AND ACAISL
+ = '718') THEN 1 ELSE NULL END)))AS "718QTY",                       
+                       CHAR(COUNT((CASE WHEN (ACLCK = 'Y' AND ACAISL
+  = '720') THEN 1 ELSE NULL END)))AS "720QTY",CHAR(COUNT((CASE WHEN 
+(ACLCK = 'Y' AND ACAISL = '722') THEN 1 ELSE NULL END)))AS "722QTY",
+ACLSTP AS LocationType FROM ACLOCN00 WHERE ACSTYL = ' '             
+AND ACAISL LIKE '7%%' AND ACAISL <> '799'            GROUP BY ACLSTP
