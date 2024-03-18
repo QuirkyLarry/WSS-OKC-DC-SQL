@@ -119,4 +119,24 @@ FROM W18BD00202/PLPULL00 AS TSK
 WHERE PLCRT = '2' AND PLTSTY IN('1C','1P')                       
 AND PLPRFN IN (SELECT WDPRWV         FROM WDWAVE00 WHERE WDIATY  
    IN (' ','WIN')   AND TSK.PLPRFN = WDPRWV)                     
-GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PLDCR),'YYYYMMDD'))          
+GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PLDCR),'YYYYMMDD'))  
+
+=========================================================
+REPLENS BY DATE & ISLE ACTIVE
+=========================================================
+SELECT DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD')),            
+COUNT((CASE WHEN PSDASL = '810' THEN 1 ELSE NULL END)) AS "810",  
+COUNT((CASE WHEN PSDASL = '812' THEN 1 ELSE NULL END)) AS "812",  
+COUNT((CASE WHEN PSDASL = '814' THEN 1 ELSE NULL END)) AS "814",  
+COUNT((CASE WHEN PSDASL = '816' THEN 1 ELSE NULL END)) AS "816",  
+COUNT((CASE WHEN PSDASL = '818' THEN 1 ELSE NULL END)) AS "818",  
+COUNT((CASE WHEN PSDASL = '820' THEN 1 ELSE NULL END)) AS "820",  
+COUNT((CASE WHEN PSDASL = '822' THEN 1 ELSE NULL END)) AS "822"   
+                                                                  
+                                                                  
+FROM PSPULL00                                                     
+WHERE  (PSDASL LIKE  '7%%' OR PSDASL LIKE '8%%') AND              
+    PSAISL <> 'RCV'                                               
+                                                                  
+GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))           
+ORDER BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))           
