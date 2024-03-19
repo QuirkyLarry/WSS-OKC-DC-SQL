@@ -60,35 +60,41 @@ ited ASC, Unboxed ASC, LANE
 ===================================================================
 -- This our lane SQL spaced out for development purposes.
 ===================================================================
-SELECT (CASE WHEN CHSTOR=' ' THEN CHPCTL  ELSE CHSTOR END) AS Store,
-(CASE WHEN CAST(CHMIS4 AS CHAR(5)) <> ' ' THEN CHMIS4               
-ELSE NULL END) AS Lane,                                             
-CHAR(                                                               
-COUNT((CASE WHEN CHSTOR=' ' THEN CHPCTL  ELSE CHSTOR END)))AS CountQ
-ty,                                                                 
-CHAR(COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END))AS UnAssigned, 
-                                                                    
-CHAR(COUNT(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END))AS Assigned,   
-                                                                    
-CHAR(COUNT(CASE WHEN CHSTAT IN ('10','20','30') AND CHAUST=' ' THEN 
-1 ELSE NULL END))AS UnAudited,                                      
+SELECT        (CASE WHEN CAST(CHSTOR AS CHAR(6)) =' '               
+     THEN CHPCTL  ELSE CHSTOR END)  AS                              
+Store,      (CASE WHEN CAST(CHMIS4 AS CHAR(5)) <> ' ' THEN CHMIS4   
+          ELSE NULL END)  AS Lane, CAST(                            
+COUNT((CASE WHEN CHSTOR=' ' THEN CHPCTL  ELSE CHSTOR END)           
+)AS CHAR(4)) AS CountQTY,TRIM(                                      
+     COUNT(CASE WHEN CHSTAT=00 THEN 1 ELSE NULL END))               
+AS UNASSIGNED,  TRIM(COUNT                                          
+(CASE WHEN CHSTAT=05 THEN 1 ELSE NULL END))            AS ASSIGNED, 
+                       TRIM(                                        
+      COUNT(CASE WHEN CHSTAT IN ('10','20','30') AND CHAUST=' ' THEN
+ 1 ELSE NULL END)  )                  AS Unaudited,                 
+       TRIM(                                                        
+      (CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN                   
+1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END))                   
+                                                 AS Audited,  
 
-CHAR((CASE WHEN COUNT (CASE WHEN CHAUST!=' 'THEN                    
-1 ELSE NULL END)=COUNT(*) THEN 'Yes'ELSE'No'END))AS Audited,        
-                                                                    
-CHAR(COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE        
-      NULL END) ) AS UnBoxed, CHAR(                                 
-(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE NULL END)         
-    = COUNT(*) THEN CHAR('Yes')  ELSE CHAR('No') END))AS Palletized,
-CHAR(                                                               
-COUNT((SELECT  DISTINCT PSPLN                                       
-FROM PSPULL00 AS TSK WHERE CART.CHCASN = PSCRTN AND PSPLN IN        
-(SELECT DISTINCT PLPLN FROM PLPULL00       WHERE PLSTAT = 15)       
-                                                                    
-                   )))AS HeldTasks,                                 
-                                                                    
-CHAR(SUM((SELECT COUNT(PSCTLN) FROM PSPULL00 WHERE                  
-PSCRTN IN CART.CHCASN)))AS TotalPicks                               
+TRIM(COUNT(CASE WHEN CHSTAT<30 AND CHAUST != ' ' THEN 1 ELSE       
+      NULL END)            )AS UnBoxed, TRIM(                      
+(CASE WHEN COUNT(CASE WHEN CHSTAT>=30 THEN 1 ELSE NULL END)        
+    = COUNT(*) THEN      'Yes'                                     
+             ELSE         'No'      END)            )AS PALLETIZED,
+CAST(                                                              
+COUNT((SELECT  DISTINCT PSPLN                                      
+FROM PSPULL00 AS TSK WHERE CART.CHCASN = PSCRTN AND PSPLN IN       
+(SELECT DISTINCT PLPLN FROM PLPULL00       WHERE PLSTAT = 15)      
+    ))AS CHAR(4)     )      AS HeldTasks ,                         
+                                                                   
+CAST(SUM((SELECT COUNT(PSCTLN) FROM PSPULL00 WHERE                 
+PSCRTN IN CART.CHCASN AND PSSTAT < 90))AS CHAR(4)       )AS Picks, 
+                                                                   
+                                                                   
+CAST(SUM((SELECT COUNT(PSCTLN) FROM PSPULL00 WHERE                 
+PSCRTN IN CART.CHCASN))AS CHAR(4)   )AS TotalPicks    
+
 
 FROM CHCART00 AS CART                                               
 WHERE CHCRTP IN ('BOX','ERR')                                       
@@ -96,11 +102,11 @@ AND CHSTAT<>99 AND CHPRWV IN (SELECT WDPRWV FROM
 WDWAVE00 WHERE WDWVST = 20 AND WDIATY IN (' ','WIN')) AND CHPCTL IN 
 (SELECT PHPCTL FROM PHPICK00 WHERE PHPSTF < 90)                     
                                                                     
-GROUP BY (CASE WHEN CHSTOR = ' ' THEN CHPCTL ELSE CHSTOR END),      
-(CASE WHEN                                                          
+GROUP BY        (CASE WHEN CAST(CHSTOR AS CHAR(6)) = ' '            
+                    THEN CHPCTL ELSE CHSTOR END)  ,      (CASE WHEN 
 CAST(CHMIS4 AS CHAR(5)) <>' ' THEN CHMIS4 ELSE NULL   END)          
-ORDER BY Palletized DESC,Audited DESC, Unassigned ASC, ASSIGNED ASC,
-UNAUDITED ASC, UNBOXED  ASC,LANE                                    
+ORDER BY PALLETIZED DESC,Audited DESC, UNASSIGNED ASC, ASSIGNED ASC,
+Unaudited ASC, UNBOXED  ASC,LANE                                    
 
 ===================================================================
 -- This our lane SQL spaced out for development purposes.
