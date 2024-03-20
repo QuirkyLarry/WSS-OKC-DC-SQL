@@ -124,22 +124,22 @@ GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PLDCR),'YYYYMMDD'))
 =========================================================
 REPLENS BY DATE & ISLE ACTIVE
 =========================================================
-SELECT DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD')),            
-COUNT((CASE WHEN PSDASL = '810' THEN 1 ELSE NULL END)) AS "810",  
-COUNT((CASE WHEN PSDASL = '812' THEN 1 ELSE NULL END)) AS "812",  
-COUNT((CASE WHEN PSDASL = '814' THEN 1 ELSE NULL END)) AS "814",  
-COUNT((CASE WHEN PSDASL = '816' THEN 1 ELSE NULL END)) AS "816",  
-COUNT((CASE WHEN PSDASL = '818' THEN 1 ELSE NULL END)) AS "818",  
-COUNT((CASE WHEN PSDASL = '820' THEN 1 ELSE NULL END)) AS "820",  
-COUNT((CASE WHEN PSDASL = '822' THEN 1 ELSE NULL END)) AS "822"   
-                                                                  
-                                                                  
-FROM PSPULL00                                                     
-WHERE  (PSDASL LIKE  '7%%' OR PSDASL LIKE '8%%') AND              
-    PSAISL <> 'RCV'                                               
-                                                                  
-GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))           
-ORDER BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))       
+SELECT DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD')),          
+                                                                
+COUNT((CASE WHEN PSDASL = '710' THEN 1 ELSE NULL END)) AS "710",
+COUNT((CASE WHEN PSDASL = '712' THEN 1 ELSE NULL END)) AS "712",
+COUNT((CASE WHEN PSDASL = '714' THEN 1 ELSE NULL END)) AS "714",
+COUNT((CASE WHEN PSDASL = '716' THEN 1 ELSE NULL END)) AS "716",
+COUNT((CASE WHEN PSDASL = '718' THEN 1 ELSE NULL END)) AS "718",
+COUNT((CASE WHEN PSDASL = '720' THEN 1 ELSE NULL END)) AS "720",
+COUNT((CASE WHEN PSDASL = '722' THEN 1 ELSE NULL END)) AS "722" 
+                                                                
+FROM PSPULL00                                                   
+WHERE   (PSDASL LIKE '7%%' OR PSDASL LIKE '8%%') AND            
+                        PSDLM LIKE '2024%%%%%%'                 
+                                                                
+GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))         
+ORDER BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))               
 =========================================================
 RETURNS LOCATIONS FOR ACTIVE
 =========================================================
