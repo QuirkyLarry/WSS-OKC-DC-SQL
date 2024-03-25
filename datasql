@@ -75,23 +75,23 @@ GROUP BY CHDCR ORDER BY CHDCR
 =========================================================
 Returns the total amount of Active Picks by Date.
 =========================================================
-SELECT                                                           
-DATE(TIMESTAMP_FORMAT(CHAR(PSDCR) ,'YYYYMMDD')) AS DATE,         
-COUNT((CASE WHEN PSCUWA = 'FLR' THEN          CONCAT(            
-   CONCAT(CONCAT(TRIM(PSAISL),TRIM(PSBAY)),TRIM(PSLEVL)),        
-TRIM(PSCRTN)) ELSE NULL END)) AS FLR,                            
-COUNT((CASE WHEN PSCUWA = 'MEZ' THEN          CONCAT(            
-   CONCAT(CONCAT(TRIM(PSAISL),TRIM(PSBAY)),TRIM(PSLEVL)),        
-TRIM(PSCRTN)) ELSE NULL END)) AS MEZ                             
-FROM PSPULL00                                                    
-WHERE PSPRWV LIKE '202403%%%%'                                   
-AND PSCRT = '50'                    AND PSSTAT  = 90             
-AND PSPRWV IN (SELECT WDPRWV  FROM WDWAVE00 WHERE WDIATY = ' ')  
-AND PSCRTN IN (SELECT CHCASN FROM CHCART00 WHERE CHPLRP ='N')    
-                                                                 
-                                                                 
-GROUP BY                                                    PSDCR
-ORDER BY PSDCR                                                                                                    
+SELECT                                                             
+DATE(TIMESTAMP_FORMAT(CHAR(PSDCR) ,'YYYYMMDD')) AS DATE,           
+COUNT((CASE WHEN PSCUWA = 'FLR' THEN          CONCAT(              
+   CONCAT(CONCAT(TRIM(PSAISL),TRIM(PSBAY)),TRIM(PSLEVL)),          
+TRIM(PSCRTN)) ELSE NULL END)) AS FLR,                              
+COUNT((CASE WHEN PSCUWA = 'MEZ' THEN          CONCAT(              
+   CONCAT(CONCAT(TRIM(PSAISL),TRIM(PSBAY)),TRIM(PSLEVL)),          
+TRIM(PSCRTN)) ELSE NULL END)) AS MEZ                               
+FROM PSPULL00                                                      
+WHERE PSPRWV LIKE '202403%%%%'                                     
+AND PSCRT = '50'                    AND PSSTAT  = 90               
+AND PSPRWV IN (SELECT WDPRWV  FROM WDWAVE00 WHERE WDIATY = ' ')    
+AND PSCRTN IN (SELECT CHCASN FROM CHCART00 WHERE CHPLRP ='N')      
+                                                                   
+                                                                   
+GROUP BY PSDCR  
+ORDER BY PSDCR                                                                                                                                                     
 
 =========================================================
 Returns ALL SKUs that are LBL Picks in casepick locations In VN1/118
