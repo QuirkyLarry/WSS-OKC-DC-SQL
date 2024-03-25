@@ -48,13 +48,26 @@ ORDER BY STDLM DESC
 =========================================================
 Returns the total amount of VNA & Pallet picks by wave.
 =========================================================
-SELECT COUNT((CASE WHEN PLCRT ='2' AND PLTSTY = '1C' AND            
+SELECT DATE(TIMESTAMP_FORMAT(CHAR(PLDCR),'YYYYMMDD'))AS DATE,       
+COUNT((CASE WHEN PLCRT ='2' AND PLTSTY = '1C' AND                   
 PLCRIN IN ('INT2PLT','INT2','INT2DZN') THEN 1 ELSE NULL  END)) AS PA
 LLETPICK,COUNT((CASE WHEN PLCRT ='2' AND PLTSTY = '1C' AND          
-PLCRIN IN ('INT2VNA'                 ) THEN 1 ELSE NULL  END)) AS VN
-APICKS                                                              
+PLCRIN IN ('INT2VNA') THEN 1 ELSE NULL  END)) AS VNAPICKS           
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
+                                                                    
 FROM PLPULL00 WHERE                                                 
-PLSTAT < 91 AND PLPRFN LIKE '20240322%%'                            
+PLSTAT < 91 AND CHAR(PLDCR) LIKE '2024%%%%%%'                       
+
+GROUP BY PLDCR
+ORDER BY PLDCR
 =========================================================
 Returns the total amount of Active Cartons by Date.
 =========================================================
