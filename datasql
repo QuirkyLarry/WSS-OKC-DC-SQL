@@ -46,16 +46,15 @@ WHERE STSTAT <> 90 AND STHZCD = 'Y'
 ORDER BY STDLM DESC                                                   
 
 =========================================================
-Returns the total amount of VNA picks by wave.
+Returns the total amount of VNA & Pallet picks by wave.
 =========================================================
-SELECT COUNT(DISTINCT PSPLN), PSPRWV                     
-                                                                                                              
-FROM PSPULL00                                            
-WHERE PSPRWV LIKE '202401%%%%%' AND PSCRT ='2 '                     
-AND PSCUWG = 'VNA' AND PSSTAT < 91
-GROUP BY PSPRWV                                          
-ORDER BY PSPRWV           
-
+SELECT COUNT((CASE WHEN PLCRT ='2' AND PLTSTY = '1C' AND            
+PLCRIN IN ('INT2PLT','INT2','INT2DZN') THEN 1 ELSE NULL  END)) AS PA
+LLETPICK,COUNT((CASE WHEN PLCRT ='2' AND PLTSTY = '1C' AND          
+PLCRIN IN ('INT2VNA'                 ) THEN 1 ELSE NULL  END)) AS VN
+APICKS                                                              
+FROM PLPULL00 WHERE                                                 
+PLSTAT < 91 AND PLPRFN LIKE '20240322%%'                            
 =========================================================
 Returns the total amount of Active Cartons by Date.
 =========================================================
