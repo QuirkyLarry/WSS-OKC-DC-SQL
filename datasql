@@ -161,7 +161,7 @@ OUNT((CASE WHEN PSDASL='822' THEN 1 ELSE NULL END)) AS CHAR(4))AS
 "822"                                                  
 FROM PSPULL00                                          
 WHERE   (PSDASL LIKE '7%%' OR PSDASL LIKE '8%%') AND   
-                        PSDLM LIKE '2024%%%%%%'        
+ PSAISL <>   'RCV' AND  PSDLM LIKE '2024%%%%%%'        
 GROUP BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))
 ORDER BY DATE(TIMESTAMP_FORMAT(CHAR(PSDLM),'YYYYMMDD'))
 =========================================================
