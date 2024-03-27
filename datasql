@@ -197,27 +197,27 @@ SUM((CASE WHEN (PLCRT ='2' AND PLTSTY = '1K' AND PLCRIN IN
 'INT2PADS','INT2AWK','INT2CC','INT2LST','INT2EQP','INT2CHI')) THEN  
 (SELECT COUNT(DISTINCT CONCAT(PSPLN,CONCAT(TRIM(PSAISL),CONCAT      
 (TRIM(PSBAY),TRIM(PSLEVL)))))FROM PSPULL00 WHERE PL.PLPLN= PSPLN    
-) ELSE NULL END)) AS OVERSTOCK,SUM(CASE WHEN (PLCRT ='51' AND PLTSTY
+) ELSE  0   END)) AS OVERSTOCK,SUM(CASE WHEN (PLCRT ='51' AND PLTSTY
 = '1K'AND PLCRIN IN ('INT51','INT51CHI','INT51PADS','INT51AWK',     
 'INT51CC','INT51PVC','INT51COMBO','INT51CUT','INT51EQP','INT51LST', 
  'INT51CPX'  ))   THEN (SELECT COUNT(DISTINCT CONCAT(PSPLN,CONCAT   
 (TRIM(PSAISL),CONCAT(TRIM(PSBAY),TRIM(PSLEVL)))))FROM PSPULL00      
-WHERE PL.PLPLN= PSPLN)                             ELSE NULL END)   
-AS CASEPICK,                                                        
+WHERE PL.PLPLN= PSPLN)                             ELSE 0    END)   
+AS CASEPICK,          
 
 SUM(CASE WHEN (PLCRT ='50' AND PLCRIN IN('INT50GRP','INT50MEZ'     
 ,'INT50CART','INT50KE')) THEN (SELECT COUNT(PSCRTN)                
-FROM PSPULL00 WHERE PL.PLPLN= PSPLN) ELSE NULL END) AS ActivePicks,
-COUNT((CASE WHEN (PLCRT ='2' AND PLCRIN IN('INT2HTR','INT2LABEL'   
-,'INT51HTR'                                                        
-  ) OR PLCRIN LIKE 'INT51LBL%'OR PLCRIN LIKE 'INT2LBL%'            
-                   ) THEN 1 ELSE NULL END))                        
-                                                    AS LabelPicks  
+FROM PSPULL00 WHERE PL.PLPLN= PSPLN) ELSE 0    END) AS ActivePicks,
                                                                    
                                                                    
+                                                                   
+SUM((CASE WHEN (               PLCRIN IN('INT2HTR','INT2LABEL'     
+,'INT2LBLPLT','INT2LBL1','INT51HTR')) THEN (SELECT COUNT(DISTINCT  
+PSPLN) FROM PSPULL00 WHERE PL.PLPLN= PSPLN) ELSE 0 END))           
+                                                      AS LabelPicks
                                                                    
 FROM PLPULL00 AS PL WHERE                                          
-PLSTAT < 91 AND CHAR(PLDCR) LIKE '202%%%%%%%'                      
+PLSTAT < 91 AND CHAR(PLDCR) LIKE '2024%%%%%%'                      
 AND PLPRFN IN (SELECT WDPRWV FROM                                  
     WDWAVE00 WHERE WDWVST >=20 AND WDIATY IN (' ','WIN'))          
 GROUP BY PLDCR                                                     
