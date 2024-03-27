@@ -184,3 +184,41 @@ NULL END)))AS "716QTY",CHAR(COUNT((CASE WHEN (                ACAISL
 (                ACAISL = '722') THEN 1 ELSE NULL END)))AS "722QTY",
 ACLSTP AS LocationType FROM ACLOCN00 WHERE                          
     ACAISL LIKE '7%%' AND ACAISL <> '799'            GROUP BY ACLSTP
+========================================================================
+Returns All Picks by tasking group
+========================================================================
+SELECT DATE(TIMESTAMP_FORMAT(CHAR(PLDCR),'YYYYMMDD'))AS DATE,       
+COUNT((CASE WHEN PLCRT ='2' AND PLTSTY = '1C' AND                   
+PLCRIN IN ('INT2PLT','INT2','INT2DZN') THEN 1 ELSE NULL  END)) AS PA
+LLETPICK,COUNT((CASE WHEN PLCRT ='2' AND PLTSTY = '1C' AND          
+PLCRIN IN ('INT2VNA') THEN 1 ELSE NULL  END)) AS VNAPICKS,          
+SUM((CASE WHEN (PLCRT ='2' AND PLTSTY = '1K' AND PLCRIN IN          
+('INT2PVC','INT2RESVIP','INT2DZN1K','INT2COMBO','INT2CPX','INT2',   
+'INT2PADS','INT2AWK','INT2CC','INT2LST','INT2EQP','INT2CHI')) THEN  
+(SELECT COUNT(DISTINCT CONCAT(PSPLN,CONCAT(TRIM(PSAISL),CONCAT      
+(TRIM(PSBAY),TRIM(PSLEVL)))))FROM PSPULL00 WHERE PL.PLPLN= PSPLN    
+) ELSE NULL END)) AS OVERSTOCK,SUM(CASE WHEN (PLCRT ='51' AND PLTSTY
+= '1K'AND PLCRIN IN ('INT51','INT51CHI','INT51PADS','INT51AWK',     
+'INT51CC','INT51PVC','INT51COMBO','INT51CUT','INT51EQP','INT51LST', 
+ 'INT51CPX'  ))   THEN (SELECT COUNT(DISTINCT CONCAT(PSPLN,CONCAT   
+(TRIM(PSAISL),CONCAT(TRIM(PSBAY),TRIM(PSLEVL)))))FROM PSPULL00      
+WHERE PL.PLPLN= PSPLN)                             ELSE NULL END)   
+AS CASEPICK,                                                        
+
+SUM(CASE WHEN (PLCRT ='50' AND PLCRIN IN('INT50GRP','INT50MEZ'     
+,'INT50CART','INT50KE')) THEN (SELECT COUNT(PSCRTN)                
+FROM PSPULL00 WHERE PL.PLPLN= PSPLN) ELSE NULL END) AS ActivePicks,
+COUNT((CASE WHEN (PLCRT ='2' AND PLCRIN IN('INT2HTR','INT2LABEL'   
+,'INT51HTR'                                                        
+  ) OR PLCRIN LIKE 'INT51LBL%'OR PLCRIN LIKE 'INT2LBL%'            
+                   ) THEN 1 ELSE NULL END))                        
+                                                    AS LabelPicks  
+                                                                   
+                                                                   
+                                                                   
+FROM PLPULL00 AS PL WHERE                                          
+PLSTAT < 91 AND CHAR(PLDCR) LIKE '202%%%%%%%'                      
+AND PLPRFN IN (SELECT WDPRWV FROM                                  
+    WDWAVE00 WHERE WDWVST >=20 AND WDIATY IN (' ','WIN'))          
+GROUP BY PLDCR                                                     
+ORDER BY PLDCR                                                     
